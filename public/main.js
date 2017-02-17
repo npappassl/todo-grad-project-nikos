@@ -20,6 +20,9 @@ function createTodo(title, callback) {
     createRequest.send(JSON.stringify({
         title: title
     }));
+    console.log(JSON.stringify({
+        title: title
+    }));
     createRequest.onload = function() {
         if (this.status === 201) {
             callback();
@@ -45,8 +48,14 @@ function getTodoList(callback) {
 function deleteTodo(id, callback) {
     var createRequest = new XMLHttpRequest();
     createRequest.open("DELETE", "/api/todo/" + id);
+    createRequest.onload = function() {
+        if (this.status === 200) {
+            callback();
+        } else {
+            window.alert("could not delete item");
+        }
+    };
     createRequest.send();
-    callback();
 }
 
 function reloadTodoList() {
