@@ -9,17 +9,40 @@ header {
     background-color: #4A0E54;
     padding: 0.5em 1em;
 }
-
+header h1 {
+  text-shadow: 2px 2px black;
+}
 section,
 h1 {
     max-width: 1170px;
     margin-left: auto;
     margin-right: auto;
 }
-
+ul{
+  display: block;
+  width: 300px;
+  margin: 1em auto;
+  list-style: none;
+}
+li{
+  margin: 1em auto;
+  background-color: white;
+}
+.todoTextBody{
+  min-width: 300px;
+  display: inline-block;
+}
 h1 {
     display: block;
     font-size: 34px;
     line-height: 34px;
     color: rgba(255, 255, 255, 0.87);
+}
+button{
+  border-color: #4A0E54;
+  background-color: #7A3E94;
+  color: white;
+  min-width: 80px;
+  height: 1.5em;
+
 }
