@@ -154,5 +154,31 @@ describe("server", function() {
                 done();
             });
         });
+        it("id is the same", function(done) {
+            request.post({
+                url: todoListUrl,
+                json: {
+                    title: "This is a TODO item",
+                    done: false
+                }
+            }, function() {
+                request.put({
+                    url: todoListUrl + "/0",
+                    json: {
+                        done: true
+                    }
+                }, function() {
+                    request.get(todoListUrl, function(error, response, body) {
+                        if (response.statusCode === 200) {
+                            assert.deepEqual(JSON.parse(body), [{title: "This is a TODO item", done: true, id: "0"}]);
+                            done();
+                        }else {
+                            assert.equal(response.statusCode, 404);
+                            done();
+                        }
+                    });
+                });
+            });
+        });
     });
 });
