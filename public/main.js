@@ -190,7 +190,7 @@ function createListItem(todo) {
     return listItem;
 }
 function updateLabel(listLength) {
-    var label = document.getElementById("toComplete");
+    var label = document.getElementById("count-label");
     if (activatedTab === 0) {
         if (listLength === 0) {
             label.innerHTML = "You haven't completed any TODOs";
