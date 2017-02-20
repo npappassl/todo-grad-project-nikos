@@ -28,7 +28,6 @@ module.exports = function(port, middleware, callback) {
 
     // Read
     app.get("/api/todo", function(req, res) {
-        console.log(todos);
         res.json(todos);
     });
 
@@ -48,15 +47,10 @@ module.exports = function(port, middleware, callback) {
 
     // Update
     app.put("/api/todo/:id", function(req, res) {
-        console.log("req.params.id " + req.params.id);
         var id = req.params.id;
         var todo = getTodo(id);
-        console.log(todo);
         if (todo) {
             todo.title = req.body.title;
-            // todo = req.body;
-            // todo.id = id;
-            // todos[id] = todo;
             res.sendStatus(status.ok);
         } else {
             res.sendStatus(status.notFound);
