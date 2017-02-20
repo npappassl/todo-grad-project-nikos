@@ -116,4 +116,42 @@ describe("server", function() {
             });
         });
     });
+    describe("update a todo", function() {
+        it("id is the same", function(done) {
+            request.post({
+                url: todoListUrl,
+                json: {
+                    title: "This is a TODO item"
+                }
+            }, function() {
+                request.put({
+                    url: todoListUrl + "/0",
+                    json: {
+                        title: "this is edited"
+                    }
+                }, function() {
+                    request.get(todoListUrl, function(error, response, body) {
+                        if (response.statusCode === 200) {
+                            assert.deepEqual(JSON.parse(body), [{title: "this is edited", id: "0"}]);
+                            done();
+                        }else {
+                            assert.equal(response.statusCode, 404);
+                            done();
+                        }
+                    });
+                });
+            });
+        });
+        it("404 is returned when not found", function(done) {
+            request.put({
+                url: todoListUrl + "/0",
+                json: {
+                    title: "this is edited"
+                }
+            }, function (error, response, body) {
+                assert.equal(response.statusCode, 404);
+                done();
+            });
+        });
+    });
 });

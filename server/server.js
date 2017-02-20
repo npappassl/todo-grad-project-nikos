@@ -2,6 +2,8 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var _ = require("underscore");
 
+var status = {"notFound": 404, "ok": 200, "created": 201};
+
 module.exports = function(port, middleware, callback) {
     var app = express();
 
@@ -21,7 +23,7 @@ module.exports = function(port, middleware, callback) {
         latestId++;
         todos.push(todo);
         res.set("Location", "/api/todo/" + todo.id);
-        res.sendStatus(201);
+        res.sendStatus(status.created);
     });
 
     // Read
@@ -37,9 +39,21 @@ module.exports = function(port, middleware, callback) {
             todos = todos.filter(function(otherTodo) {
                 return otherTodo !== todo;
             });
-            res.sendStatus(200);
+            res.sendStatus(status.ok);
         } else {
-            res.sendStatus(404);
+            res.sendStatus(status.notFound);
+        }
+    });
+
+    // Update
+    app.put("/api/todo/:id", function(req, res) {
+        var id = req.params.id;
+        var todo = getTodo(id);
+        if (todo) {
+            todo.title = req.body.title;
+            res.sendStatus(status.ok);
+        } else {
+            res.sendStatus(status.notFound);
         }
     });
 
