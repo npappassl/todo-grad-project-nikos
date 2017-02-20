@@ -63,6 +63,7 @@ function deleteTodo(id, callback) {
 }
 
 function reloadTodoList() {
+    var listLength = 0;
     while (todoList.firstChild) {
         todoList.removeChild(todoList.firstChild);
     }
@@ -73,16 +74,19 @@ function reloadTodoList() {
         todos.forEach(function(todo) {
             if (activatedTab === 0) {
                 if (todo.done) {
+                    listLength++;
                     listItem = createListItem(todo);
                     todoList.appendChild(listItem);
                 }
             } else {
                 if (!todo.done) {
+                    listLength++;
                     listItem = createListItem(todo);
                     todoList.appendChild(listItem);
                 }
             }
         });
+        updateLabel(listLength);
     });
 }
 function updateListItem(todo, callback) {
@@ -185,5 +189,24 @@ function createListItem(todo) {
 
     return listItem;
 }
-
+function updateLabel(listLength) {
+    var label = document.getElementById("count-label");
+    if (activatedTab === 0) {
+        if (listLength === 0) {
+            label.innerHTML = "You haven't completed any TODOs";
+        } else if (listLength === 1) {
+            label.innerHTML = "You have completed one TODO";
+        } else {
+            label.innerHTML = "You have completed " + listLength + " TODOs";
+        }
+    } else {
+        if (listLength === 0) {
+            label.innerHTML = "You don't have any pending TODOs";
+        } else if (listLength === 1) {
+            label.innerHTML = "You have one TODO";
+        } else {
+            label.innerHTML = "There are " + listLength + " TODOs to complete";
+        }
+    }
+}
 reloadTodoList();
