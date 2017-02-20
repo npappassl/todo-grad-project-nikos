@@ -116,4 +116,28 @@ describe("server", function() {
             });
         });
     });
+    describe("update a todo", function() {
+        it("id is the same", function () {
+            request.post({
+                url: todoListUrl,
+                json: {
+                    title: "This is a TODO item",
+                    done: false
+                }
+            }, function() {
+                request.put({
+                    url: todoListUrl + "/0",
+                    json: {
+                        title: "this is edited",
+                        done: false
+                    }
+                }, function() {
+                    request.get(todoListUrl, function(error, response, body) {
+                        console.log(error + " " + body + " " + response);
+                        assert.deepEqual(JSON.parse(body), [{title: "this is edited", id: "0"}]);
+                    });
+                });
+            });
+        });
+    });
 });
