@@ -117,14 +117,15 @@ describe("server", function() {
         });
     });
     describe("update a todo", function() {
-        it("id is the same", function () {
+        it("id is the same", function (done) {
             request.post({
                 url: todoListUrl,
                 json: {
                     title: "This is a TODO item",
                     done: false
                 }
-            }, function() {
+            }, function(done) {
+                // console.log("put " + error + " " + body + " " + response);
                 request.put({
                     url: todoListUrl + "/0",
                     json: {
@@ -133,8 +134,9 @@ describe("server", function() {
                     }
                 }, function() {
                     request.get(todoListUrl, function(error, response, body) {
-                        console.log(error + " " + body + " " + response);
+                        console.log("get " + error + " " + body + " " + response);
                         assert.deepEqual(JSON.parse(body), [{title: "this is edited", id: "0"}]);
+                        done();
                     });
                 });
             });
