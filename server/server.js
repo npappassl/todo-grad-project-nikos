@@ -48,10 +48,16 @@ module.exports = function(port, middleware, callback) {
 
     // Update
     app.put("/api/todo/:id", function(req, res) {
+        console.log(req.body);
         var id = req.params.id;
         var todo = getTodo(id);
         if (todo) {
-            todo.title = req.body.title;
+            if (req.body.title) {
+                todo.title = req.body.title;
+            }
+            if (req.body.done) {
+                todo.done = req.body.done;
+            }
             res.sendStatus(status.ok);
         } else {
             res.sendStatus(status.notFound);

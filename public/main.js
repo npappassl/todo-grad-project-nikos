@@ -3,7 +3,7 @@ var todoListPlaceholder = document.getElementById("todo-list-placeholder");
 var form = document.getElementById("todo-form");
 var todoTitle = document.getElementById("new-todo");
 var error = document.getElementById("error");
-
+var activatedTab = 1;
 form.onsubmit = function(event) {
     var title = todoTitle.value;
     createTodo(title, function() {
@@ -13,6 +13,13 @@ form.onsubmit = function(event) {
     event.preventDefault();
 };
 
+function activateTab(num) {
+    var nav = document.getElementsByTagName("nav")[0].getElementsByTagName("span");
+    nav[num].className = "active";
+    nav[nav.length - num - 1].className = "";
+    activatedTab = num;
+    reloadTodoList();
+}
 function createTodo(title, callback) {
     var createRequest = new XMLHttpRequest();
     createRequest.open("POST", "/api/todo");
@@ -61,10 +68,20 @@ function reloadTodoList() {
     }
     todoListPlaceholder.style.display = "block";
     getTodoList(function(todos) {
+        var listItem;
         todoListPlaceholder.style.display = "none";
         todos.forEach(function(todo) {
-            var listItem = createListItem(todo);
-            todoList.appendChild(listItem);
+            if (activatedTab === 0) {
+                if (todo.done) {
+                    listItem = createListItem(todo);
+                    todoList.appendChild(listItem);
+                }
+            } else {
+                if (!todo.done) {
+                    listItem = createListItem(todo);
+                    todoList.appendChild(listItem);
+                }
+            }
         });
     });
 }
@@ -115,6 +132,23 @@ function updateListItemDB(id, inputTxt, callback) {
         }
     };
 }
+
+function doneTodo(id, callback) {
+    var createRequest = new XMLHttpRequest();
+    createRequest.open("PUT", "/api/todo/" + id);
+    createRequest.setRequestHeader("Content-type", "application/json");
+    createRequest.send(JSON.stringify({
+        done: true
+    }));
+    createRequest.onload = function () {
+        if (this.status === 200) {
+            callback();
+        } else {
+            error.textContent = "Failed to update " + this.status + " - " + this.responseText;
+        }
+    };
+}
+
 function createListItem(todo) {
     var listItem = document.createElement("li");
     listItem.id = "li" + todo.id;
@@ -127,16 +161,19 @@ function createListItem(todo) {
     var updateButton = document.createElement("button");
     updateButton.id = "update" + todo.id;
     updateButton.innerHTML = "&#x2712;";
-    updateButton.onclick = function () {
+    updateButton.onclick = function() {
         updateListItem(todo, reloadTodoList);
     };
     var completeButton = document.createElement("button");
     completeButton.id = "comp" + todo.id;
     completeButton.innerHTML = "&#x2713;";
+    completeButton.onclick = function() {
+        doneTodo(todo.id, reloadTodoList);
+    };
     var deleteButton = document.createElement("button");
     deleteButton.id = "del" + todo.id;
     deleteButton.innerHTML = "X";
-    deleteButton.onclick = function () {
+    deleteButton.onclick = function() {
         deleteTodo(todo.id, reloadTodoList);
     };
 
