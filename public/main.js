@@ -78,6 +78,7 @@ function createListItem(todo) {
     todoText.className = "todoTextBody";
     todoText.textContent = todo.title;
     var deleteButton = document.createElement("button");
+    deleteButton.id = "del" + todo.id;
     deleteButton.textContent = "delete";
     deleteButton.onclick = function () {
         deleteTodo(todo.id, reloadTodoList);

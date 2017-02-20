@@ -78,8 +78,8 @@ module.exports.addTodo = function(text) {
     driver.findElement(webdriver.By.id("new-todo")).sendKeys(text);
     driver.findElement(webdriver.By.id("submit-todo")).click();
 };
-module.exports.deleteTodo = function() {
-    driver.findElement(webdriver.By.className("button"))[0].click();
+module.exports.deleteTodo = function(id) {
+    driver.findElement(webdriver.By.id("del" + id)).click();
 };
 module.exports.setupErrorRoute = function(action, route) {
     if (action === "get") {
