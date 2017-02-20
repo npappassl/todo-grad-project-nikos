@@ -121,7 +121,8 @@ describe("server", function() {
             request.post({
                 url: todoListUrl,
                 json: {
-                    title: "This is a TODO item"
+                    title: "This is a TODO item",
+                    done: false
                 }
             }, function() {
                 request.put({
@@ -132,7 +133,7 @@ describe("server", function() {
                 }, function() {
                     request.get(todoListUrl, function(error, response, body) {
                         if (response.statusCode === 200) {
-                            assert.deepEqual(JSON.parse(body), [{title: "this is edited", id: "0"}]);
+                            assert.deepEqual(JSON.parse(body), [{title: "this is edited", done: false, id: "0"}]);
                             done();
                         }else {
                             assert.equal(response.statusCode, 404);
