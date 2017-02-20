@@ -3,7 +3,7 @@ var todoListPlaceholder = document.getElementById("todo-list-placeholder");
 var form = document.getElementById("todo-form");
 var todoTitle = document.getElementById("new-todo");
 var error = document.getElementById("error");
-
+var activatedTab = 1;
 form.onsubmit = function(event) {
     var title = todoTitle.value;
     createTodo(title, function() {
@@ -13,6 +13,13 @@ form.onsubmit = function(event) {
     event.preventDefault();
 };
 
+function activateTab(num) {
+    var nav = document.getElementsByTagName("nav")[0].getElementsByTagName("span");
+    nav[num].className = "active";
+    nav[nav.length - num - 1].className = "";
+    activatedTab = num;
+    reloadTodoList();
+}
 function createTodo(title, callback) {
     var createRequest = new XMLHttpRequest();
     createRequest.open("POST", "/api/todo");
@@ -61,10 +68,20 @@ function reloadTodoList() {
     }
     todoListPlaceholder.style.display = "block";
     getTodoList(function(todos) {
+        var listItem;
         todoListPlaceholder.style.display = "none";
         todos.forEach(function(todo) {
-            var listItem = createListItem(todo);
-            todoList.appendChild(listItem);
+            if (activatedTab === 0) {
+                if (todo.done) {
+                    listItem = createListItem(todo);
+                    todoList.appendChild(listItem);
+                }
+            } else {
+                if (!todo.done) {
+                    listItem = createListItem(todo);
+                    todoList.appendChild(listItem);
+                }
+            }
         });
     });
 }

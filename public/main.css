@@ -4,7 +4,7 @@
   font-family: "Raleway", sans-serif;
 }
 body {
-    background: #E8F5E9;
+    background: #d8d2d3;
     color: rgba(0, 0, 0, 0.87);
     font-family: sans-serif;
     margin: 0;
@@ -21,6 +21,26 @@ header h1 {
     padding-bottom: 0.3em;
     font-weight: 200;
     font-size: 40px;
+}
+nav{
+  height: 2em;
+  border-top: 1px solid white;
+  text-align: center;
+  background-color: #4A0E34;
+  /*opacity: 0.7;*/
+}
+nav span{
+  margin-top: 0em;
+  height: 100%;
+  background-color: rgba(74,15,52,0.7);
+  display:inline-block;
+  width: 45%;
+  color:white;
+  text-align: center;
+}
+.active{
+  background-color: #d8d2d3;
+  color: black;
 }
 section,
 h1 {
