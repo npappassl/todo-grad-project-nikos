@@ -52,7 +52,7 @@ function deleteTodo(id, callback) {
         if (this.status === 200) {
             callback();
         } else {
-            window.alert("could not delete item");
+            window.alert("could not delete item " + id);
         }
     };
     createRequest.send();
@@ -77,14 +77,22 @@ function createListItem(todo) {
     var todoText = document.createElement("span");
     todoText.className = "todoTextBody";
     todoText.textContent = todo.title;
+    var updateButton = document.createElement("button");
+    updateButton.id = "update" + todo.id;
+    updateButton.innerHTML = "&#x2712;";
+    var completeButton = document.createElement("button");
+    completeButton.id = "comp" + todo.id;
+    completeButton.innerHTML = "&#x2713;";
     var deleteButton = document.createElement("button");
     deleteButton.id = "del" + todo.id;
-    deleteButton.textContent = "delete";
+    deleteButton.innerHTML = "x";
     deleteButton.onclick = function () {
         deleteTodo(todo.id, reloadTodoList);
     };
     listItem.appendChild(todoText);
     listItem.appendChild(deleteButton);
+    listItem.appendChild(completeButton);
+    listItem.appendChild(updateButton);
     return listItem;
 }
 
