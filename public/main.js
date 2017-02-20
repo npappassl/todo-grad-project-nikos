@@ -70,19 +70,34 @@ function reloadTodoList() {
 }
 function updateListItem(todo, callback) {
     var textUpdateSpan = document.createElement("span");
+    textUpdateSpan.className = "updateSpan";
     var inputTxt = document.createElement("input");
+    inputTxt.className = "updateTxt";
+
+    var li = document.getElementById("li" + todo.id);
     inputTxt.type = "text";
     inputTxt.value = todo.title;
-    var inputSubmit = document.createElement("input");
+
+    var inputSubmit = document.createElement("button");
     inputSubmit.type = "submit";
+    inputSubmit.innerHTML = "&#x2713;";
+    inputSubmit.className = "confirmUpdate";
     inputSubmit.onclick = function () {
         updateListItemDB(todo.id, inputTxt, callback);
     };
+
+    var cancelUpdate = document.createElement("button");
+    cancelUpdate.innerHTML = "X";
+    cancelUpdate.onclick = function() {
+        li.removeChild(textUpdateSpan);
+    };
+
+    textUpdateSpan.appendChild(cancelUpdate);
     textUpdateSpan.appendChild(inputSubmit);
     textUpdateSpan.appendChild(inputTxt);
-    var li = document.getElementById("li" + todo.id);
-    li.appendChild(textUpdateSpan);
-    console.log(todo.id);
+    if (li.getElementsByClassName("updateSpan").length === 0) {
+        li.appendChild(textUpdateSpan);
+    }
 }
 function updateListItemDB(id, inputTxt, callback) {
     var createRequest = new XMLHttpRequest();
@@ -103,6 +118,9 @@ function updateListItemDB(id, inputTxt, callback) {
 function createListItem(todo) {
     var listItem = document.createElement("li");
     listItem.id = "li" + todo.id;
+    var numbering = document.createElement("span");
+    numbering.className = "numbering";
+    numbering.innerHTML = document.getElementsByClassName("numbering").length + 1;
     var todoText = document.createElement("span");
     todoText.className = "todoTextBody";
     todoText.textContent = todo.title;
@@ -117,14 +135,17 @@ function createListItem(todo) {
     completeButton.innerHTML = "&#x2713;";
     var deleteButton = document.createElement("button");
     deleteButton.id = "del" + todo.id;
-    deleteButton.innerHTML = "x";
+    deleteButton.innerHTML = "X";
     deleteButton.onclick = function () {
         deleteTodo(todo.id, reloadTodoList);
     };
+
+    listItem.appendChild(numbering);
     listItem.appendChild(todoText);
     listItem.appendChild(deleteButton);
     listItem.appendChild(completeButton);
     listItem.appendChild(updateButton);
+
     return listItem;
 }
 
