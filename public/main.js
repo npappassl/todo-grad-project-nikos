@@ -20,6 +20,9 @@ function createTodo(title, callback) {
     createRequest.send(JSON.stringify({
         title: title
     }));
+    console.log(JSON.stringify({
+        title: title
+    }));
     createRequest.onload = function() {
         if (this.status === 201) {
             callback();
@@ -42,6 +45,19 @@ function getTodoList(callback) {
     createRequest.send();
 }
 
+function deleteTodo(id, callback) {
+    var createRequest = new XMLHttpRequest();
+    createRequest.open("DELETE", "/api/todo/" + id);
+    createRequest.onload = function() {
+        if (this.status === 200) {
+            callback();
+        } else {
+            window.alert("could not delete item");
+        }
+    };
+    createRequest.send();
+}
+
 function reloadTodoList() {
     while (todoList.firstChild) {
         todoList.removeChild(todoList.firstChild);
@@ -50,11 +66,26 @@ function reloadTodoList() {
     getTodoList(function(todos) {
         todoListPlaceholder.style.display = "none";
         todos.forEach(function(todo) {
-            var listItem = document.createElement("li");
-            listItem.textContent = todo.title;
+            var listItem = createListItem(todo);
             todoList.appendChild(listItem);
         });
     });
+}
+
+function createListItem(todo) {
+    var listItem = document.createElement("li");
+    var todoText = document.createElement("span");
+    todoText.className = "todoTextBody";
+    todoText.textContent = todo.title;
+    var deleteButton = document.createElement("button");
+    deleteButton.id = "del" + todo.id;
+    deleteButton.textContent = "delete";
+    deleteButton.onclick = function () {
+        deleteTodo(todo.id, reloadTodoList);
+    };
+    listItem.appendChild(todoText);
+    listItem.appendChild(deleteButton);
+    return listItem;
 }
 
 reloadTodoList();
