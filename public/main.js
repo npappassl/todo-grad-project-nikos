@@ -83,7 +83,7 @@ function reloadTodoList() {
             listItem = createListItem(todo);
             todoList.appendChild(listItem);
         });
-        addDeleteAllButton();
+        addDeleteAllButton(todos.length);
         updateLabel(todos.length);
     });
 }
@@ -99,10 +99,13 @@ function filterTodos(todos) {
     }
     return todos;
 }
-function addDeleteAllButton() {
-    if (activatedTab === 0) {
+function addDeleteAllButton(completeLength) {
+    if (activatedTab === 0 &&
+        completeLength > 0) {
+
         var but = document.createElement("button");
-        but.innerHTML = "Delete all";
+        but.innerHTML = "Delete Complete";
+        but.id = "deleteComplete";
         but.onclick = function () {
             deleteAllComplete(reloadTodoList);
         };
@@ -200,14 +203,20 @@ function createListItem(todo) {
     todoText.textContent = todo.title;
 
     var updateButton = createItemButton(todo, specChar.pen, "update", updateListItem);
-    var completeButton = createItemButton(todo, specChar.tick, "comp", doneTodo);
     var deleteButton = createItemButton(todo, "X", "del", deleteTodo);
 
+    var buttonSpan = document.createElement("span");
+    buttonSpan.className = "buttonSpan";
     listItem.appendChild(numbering);
     listItem.appendChild(todoText);
-    listItem.appendChild(deleteButton);
-    listItem.appendChild(completeButton);
-    listItem.appendChild(updateButton);
+    buttonSpan.appendChild(deleteButton);
+    if (!todo.isComplete) {
+        var completeButton = createItemButton(todo, specChar.tick, "comp", doneTodo);
+        buttonSpan.appendChild(completeButton);
+    }
+
+    buttonSpan.appendChild(updateButton);
+    listItem.appendChild(buttonSpan);
 
     return listItem;
 }
@@ -232,13 +241,21 @@ function updateLabel(listLength) {
         } else {
             label.innerHTML = "You have completed " + listLength + " TODOs";
         }
-    } else {
+    } else if (activatedTab === 1) {
         if (listLength === 0) {
             label.innerHTML = "You don't have any pending TODOs";
         } else if (listLength === 1) {
             label.innerHTML = "You have one TODO";
         } else {
             label.innerHTML = "There are " + listLength + " TODOs to complete";
+        }
+    } else {
+        if (listLength === 0) {
+            label.innerHTML = "You don't have any kind of TODOs";
+        } else if (listLength === 1) {
+            label.innerHTML = "You have one TODO in general";
+        } else {
+            label.innerHTML = "There are " + listLength + " TODOs either complete or not";
         }
     }
 }
