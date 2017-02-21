@@ -35,6 +35,6 @@
     "body-parser": "^1.12.4",
     "express": "^4.12.4",
     "underscore": "^1.8.3",
-    "fetch": "^1.1.0"
+    "whatwg-fetch": "^1.1.0"
   }
 }
