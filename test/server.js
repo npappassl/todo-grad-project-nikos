@@ -1,6 +1,7 @@
 var server = require("../server/server");
 var request = require("request");
 var assert = require("chai").assert;
+var help = require("./serverHelper");
 
 var testPort = 52684;
 var baseUrl = "http://localhost:" + testPort;
@@ -114,6 +115,25 @@ describe("server", function() {
                     });
                 });
             });
+        });
+    });
+    describe("delete all completed", function() {
+        it("there is no completed left", function() {
+            help.put3Complete2Incomplete(todoListUrl);
+            // wait(30000);
+            // request.post({
+            //     url: todoListUrl,
+            //     json: {
+            //         title: "This is a TODO item",
+            //         isComplete: false
+            //     }
+            // }, function() {
+            //     request.put({
+            //         url: todoListUrl + "/0",
+            //         json: {
+            //             isComplete: true;
+            //         }
+            //     },
         });
     });
     describe("update a todo", function() {

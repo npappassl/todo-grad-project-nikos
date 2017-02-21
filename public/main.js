@@ -17,9 +17,14 @@ form.onsubmit = function(event) {
 
 function activateTab(num) {
     var nav = document.getElementsByTagName("nav")[0].getElementsByTagName("span");
-    nav[num].className = "active";
-    nav[nav.length - num - 1].className = "";
     activatedTab = num;
+    for (var i = 0;i < 3;i++) {
+        if (num === i) {
+            nav[i].className = "active";
+        } else {
+            nav[i].className = "";
+        }
+    }
     reloadTodoList();
 }
 function createTodo(title, callback) {
@@ -66,40 +71,40 @@ function deleteTodo(todo, callback) {
 }
 
 function reloadTodoList() {
-    var listLength = 0;
     while (todoList.firstChild) {
         todoList.removeChild(todoList.firstChild);
     }
     todoListPlaceholder.style.display = "block";
     getTodoList(function(todos) {
+        todos = filterTodos(todos);
         var listItem;
         todoListPlaceholder.style.display = "none";
         todos.forEach(function(todo) {
-            if (activatedTab === 0) {
-                if (todo.isComplete) {
-                    listLength++;
-                    listItem = createListItem(todo);
-                    todoList.appendChild(listItem);
-                }
-            } else {
-                if (!todo.isComplete) {
-                    listLength++;
-                    listItem = createListItem(todo);
-                    todoList.appendChild(listItem);
-                }
-            }
+            listItem = createListItem(todo);
+            todoList.appendChild(listItem);
         });
         addDeleteAllButton();
-        updateLabel(listLength);
+        updateLabel(todos.length);
     });
 }
-
+function filterTodos(todos) {
+    if (activatedTab === 0) {
+        todos = todos.filter(function(todo) {
+            return todo.isComplete;
+        });
+    } else if (activatedTab === 1) {
+        todos = todos.filter(function(todo) {
+            return !todo.isComplete;
+        });
+    }
+    return todos;
+}
 function addDeleteAllButton() {
     if (activatedTab === 0) {
         var but = document.createElement("button");
         but.innerHTML = "Delete all";
         but.onclick = function () {
-            deleteAllComplete();
+            deleteAllComplete(reloadTodoList);
         };
         document.getElementById("todo-list").appendChild(but);
     }

@@ -35,14 +35,22 @@ module.exports = function(port, middleware, callback) {
     // Delete
     app.delete("/api/todo/:id", function(req, res) {
         var id = req.params.id;
-        var todo = getTodo(id);
-        if (todo) {
-            todos = todos.filter(function(otherTodo) {
-                return otherTodo !== todo;
+        console.log(id);
+        if (id === "complete") {
+            todos = todos.filter(function(todo) {
+                return todo.isComplete !== true;
             });
             res.sendStatus(status.ok);
         } else {
-            res.sendStatus(status.notFound);
+            var todo = getTodo(id);
+            if (todo) {
+                todos = todos.filter(function(otherTodo) {
+                    return otherTodo !== todo;
+                });
+                res.sendStatus(status.ok);
+            } else {
+                res.sendStatus(status.notFound);
+            }
         }
     });
 
@@ -67,6 +75,11 @@ module.exports = function(port, middleware, callback) {
     function getTodo(id) {
         return _.find(todos, function(todo) {
             return todo.id === id;
+        });
+    }
+    function getComplete() {
+        return todos.filter(function(todo) {
+            return todo.isComplete;
         });
     }
 
