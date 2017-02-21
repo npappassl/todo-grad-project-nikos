@@ -19,7 +19,7 @@ module.exports = function(port, middleware, callback) {
     // Create
     app.post("/api/todo", function(req, res) {
         var todo = req.body;
-        todo.done = false;
+        todo.isComplete = false;
         todo.id = latestId.toString();
         latestId++;
         todos.push(todo);
@@ -35,28 +35,32 @@ module.exports = function(port, middleware, callback) {
     // Delete
     app.delete("/api/todo/:id", function(req, res) {
         var id = req.params.id;
-        var todo = getTodo(id);
-        if (todo) {
-            todos = todos.filter(function(otherTodo) {
-                return otherTodo !== todo;
-            });
-            res.sendStatus(status.ok);
-        } else {
+        if (id === "complete") {
+            todos = getInComplete(todos);
             res.sendStatus(status.notFound);
+        } else {
+            var todo = getTodo(id);
+            if (todo) {
+                todos = todos.filter(function(otherTodo) {
+                    return otherTodo !== todo;
+                });
+                res.sendStatus(status.ok);
+            } else {
+                res.sendStatus(status.notFound);
+            }
         }
     });
 
     // Update
     app.put("/api/todo/:id", function(req, res) {
-        console.log(req.body);
         var id = req.params.id;
         var todo = getTodo(id);
         if (todo) {
             if (req.body.title) {
                 todo.title = req.body.title;
             }
-            if (req.body.done) {
-                todo.done = req.body.done;
+            if (req.body.isComplete) {
+                todo.isComplete = req.body.isComplete;
             }
             res.sendStatus(status.ok);
         } else {
@@ -67,6 +71,11 @@ module.exports = function(port, middleware, callback) {
     function getTodo(id) {
         return _.find(todos, function(todo) {
             return todo.id === id;
+        });
+    }
+    function getInComplete() {
+        return todos.filter(function(todo) {
+            return !todo.isComplete;
         });
     }
 

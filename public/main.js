@@ -3,7 +3,9 @@ var todoListPlaceholder = document.getElementById("todo-list-placeholder");
 var form = document.getElementById("todo-form");
 var todoTitle = document.getElementById("new-todo");
 var error = document.getElementById("error");
+var specChar = {"tick": "&#x2713;", "pen": "&#x2712;"};
 var activatedTab = 1;
+
 form.onsubmit = function(event) {
     var title = todoTitle.value;
     createTodo(title, function() {
@@ -15,9 +17,14 @@ form.onsubmit = function(event) {
 
 function activateTab(num) {
     var nav = document.getElementsByTagName("nav")[0].getElementsByTagName("span");
-    nav[num].className = "active";
-    nav[nav.length - num - 1].className = "";
     activatedTab = num;
+    for (var i = 0;i < 3;i++) {
+        if (num === i) {
+            nav[i].className = "active";
+        } else {
+            nav[i].className = "";
+        }
+    }
     reloadTodoList();
 }
 function createTodo(title, callback) {
@@ -25,7 +32,8 @@ function createTodo(title, callback) {
     createRequest.open("POST", "/api/todo");
     createRequest.setRequestHeader("Content-type", "application/json");
     createRequest.send(JSON.stringify({
-        title: title
+        title: title,
+        isComplete: false
     }));
     createRequest.onload = function() {
         if (this.status === 201) {
@@ -49,59 +57,86 @@ function getTodoList(callback) {
     createRequest.send();
 }
 
-function deleteTodo(id, callback) {
+function deleteTodo(todo, callback) {
     var createRequest = new XMLHttpRequest();
-    createRequest.open("DELETE", "/api/todo/" + id);
+    createRequest.open("DELETE", "/api/todo/" + todo.id);
     createRequest.onload = function() {
         if (this.status === 200) {
             callback();
         } else {
-            window.alert("could not delete item " + id);
+            window.alert("could not delete item " + todo.id);
         }
     };
     createRequest.send();
 }
 
 function reloadTodoList() {
-    var listLength = 0;
     while (todoList.firstChild) {
         todoList.removeChild(todoList.firstChild);
     }
     todoListPlaceholder.style.display = "block";
     getTodoList(function(todos) {
+        todos = filterTodos(todos);
         var listItem;
         todoListPlaceholder.style.display = "none";
         todos.forEach(function(todo) {
-            if (activatedTab === 0) {
-                if (todo.done) {
-                    listLength++;
-                    listItem = createListItem(todo);
-                    todoList.appendChild(listItem);
-                }
-            } else {
-                if (!todo.done) {
-                    listLength++;
-                    listItem = createListItem(todo);
-                    todoList.appendChild(listItem);
-                }
-            }
+            listItem = createListItem(todo);
+            todoList.appendChild(listItem);
         });
-        updateLabel(listLength);
+        addDeleteAllButton();
+        updateLabel(todos.length);
     });
 }
+function filterTodos(todos) {
+    if (activatedTab === 0) {
+        todos = todos.filter(function(todo) {
+            return todo.isComplete;
+        });
+    } else if (activatedTab === 1) {
+        todos = todos.filter(function(todo) {
+            return !todo.isComplete;
+        });
+    }
+    return todos;
+}
+function addDeleteAllButton() {
+    if (activatedTab === 0) {
+        var but = document.createElement("button");
+        but.innerHTML = "Delete all";
+        but.onclick = function () {
+            deleteAllComplete(reloadTodoList);
+        };
+        document.getElementById("todo-list").appendChild(but);
+    }
+}
+
+function deleteAllComplete(callback) {
+    var createRequest = new XMLHttpRequest();
+    createRequest.open("DELETE", "/api/todo/complete");
+    createRequest.onload = function() {
+        if (this.status === 200) {
+            callback();
+        } else {
+            window.alert("could not delete items");
+        }
+    };
+    createRequest.send();
+}
+
 function updateListItem(todo, callback) {
+    console.log(li);
     var textUpdateSpan = document.createElement("span");
     textUpdateSpan.className = "updateSpan";
     var inputTxt = document.createElement("input");
     inputTxt.className = "updateTxt";
-
     var li = document.getElementById("li" + todo.id);
     inputTxt.type = "text";
     inputTxt.value = todo.title;
+    console.log(todo);
 
     var inputSubmit = document.createElement("button");
     inputSubmit.type = "submit";
-    inputSubmit.innerHTML = "&#x2713;";
+    inputSubmit.innerHTML = specChar.tick;
     inputSubmit.className = "confirmUpdate";
     inputSubmit.onclick = function () {
         updateListItemDB(todo.id, inputTxt, callback);
@@ -120,6 +155,7 @@ function updateListItem(todo, callback) {
         li.appendChild(textUpdateSpan);
     }
 }
+
 function updateListItemDB(id, inputTxt, callback) {
     var createRequest = new XMLHttpRequest();
     var title = inputTxt.value;
@@ -137,12 +173,12 @@ function updateListItemDB(id, inputTxt, callback) {
     };
 }
 
-function doneTodo(id, callback) {
+function doneTodo(todo, callback) {
     var createRequest = new XMLHttpRequest();
-    createRequest.open("PUT", "/api/todo/" + id);
+    createRequest.open("PUT", "/api/todo/" + todo.id);
     createRequest.setRequestHeader("Content-type", "application/json");
     createRequest.send(JSON.stringify({
-        done: true
+        isComplete: true
     }));
     createRequest.onload = function () {
         if (this.status === 200) {
@@ -162,24 +198,10 @@ function createListItem(todo) {
     var todoText = document.createElement("span");
     todoText.className = "todoTextBody";
     todoText.textContent = todo.title;
-    var updateButton = document.createElement("button");
-    updateButton.id = "update" + todo.id;
-    updateButton.innerHTML = "&#x2712;";
-    updateButton.onclick = function() {
-        updateListItem(todo, reloadTodoList);
-    };
-    var completeButton = document.createElement("button");
-    completeButton.id = "comp" + todo.id;
-    completeButton.innerHTML = "&#x2713;";
-    completeButton.onclick = function() {
-        doneTodo(todo.id, reloadTodoList);
-    };
-    var deleteButton = document.createElement("button");
-    deleteButton.id = "del" + todo.id;
-    deleteButton.innerHTML = "X";
-    deleteButton.onclick = function() {
-        deleteTodo(todo.id, reloadTodoList);
-    };
+
+    var updateButton = createItemButton(todo, specChar.pen, "update", updateListItem);
+    var completeButton = createItemButton(todo, specChar.tick, "comp", doneTodo);
+    var deleteButton = createItemButton(todo, "X", "del", deleteTodo);
 
     listItem.appendChild(numbering);
     listItem.appendChild(todoText);
@@ -189,6 +211,17 @@ function createListItem(todo) {
 
     return listItem;
 }
+
+function createItemButton(todo, char, butId, action) {
+    var button = document.createElement("button");
+    button.id = butId + todo.id;
+    button.innerHTML = char;
+    button.onclick = function() {
+        action(todo, reloadTodoList);
+    };
+    return button;
+}
+
 function updateLabel(listLength) {
     var label = document.getElementById("count-label");
     if (activatedTab === 0) {
