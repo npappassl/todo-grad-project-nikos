@@ -37,7 +37,7 @@ module.exports = function(port, middleware, callback) {
         var id = req.params.id;
         if (id === "complete") {
             todos = getInComplete(todos);
-            res.sendStatus(status.notFound);
+            res.sendStatus(status.ok);
         } else {
             var todo = getTodo(id);
             if (todo) {
