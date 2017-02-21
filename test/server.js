@@ -117,23 +117,55 @@ describe("server", function() {
             });
         });
     });
+    describe("delete no incomplete", function() {
+        it("no incomplete is deleted", function(done) {
+            put3Incomplete(function(body) {
+                assert.deepEqual(JSON.parse(body), [{title: "This is a TODO item", isComplete: false, id: "0"},
+                                                    {title: "This is a TODO item", isComplete: false, id: "1"},
+                                                    {title: "This is a TODO item", isComplete: false, id: "2"}]);
+                request.del(todoListUrl + "/complete", function (error, response) {
+                    request.get(todoListUrl, function(error, response, body) {
+                        assert.deepEqual(JSON.parse(body),
+                            [{title: "This is a TODO item", isComplete: false, id: "0"},
+                            {title: "This is a TODO item", isComplete: false, id: "1"},
+                            {title: "This is a TODO item", isComplete: false, id: "2"}]);
+                        done();
+
+                    });
+
+                });
+            });
+        });
+    });
     describe("delete all completed", function() {
-        it("there is no completed left", function() {
-            help.put3Complete2Incomplete(todoListUrl);
-            // wait(30000);
-            // request.post({
-            //     url: todoListUrl,
-            //     json: {
-            //         title: "This is a TODO item",
-            //         isComplete: false
-            //     }
-            // }, function() {
-            //     request.put({
-            //         url: todoListUrl + "/0",
-            //         json: {
-            //             isComplete: true;
-            //         }
-            //     },
+        it("no complete is left in the todos", function(done) {
+            put3Incomplete(function() {
+                put3Incomplete(function() {
+                    put3Complete(1, 3, 4, function(body) {
+                        assert.deepEqual(JSON.parse(body), [
+                            {title: "This is a TODO item", isComplete: false, id: "0"},
+                            {title: "This is a TODO item", isComplete: true, id: "1"},
+                            {title: "This is a TODO item", isComplete: false, id: "2"},
+                            {title: "This is a TODO item", isComplete: true, id: "3"},
+                            {title: "This is a TODO item", isComplete: true, id: "4"},
+                            {title: "This is a TODO item", isComplete: false, id: "5"}]);
+                        var finalUrl = todoListUrl + "/complete";
+                        request({
+
+                            method: "DELETE",
+                            url: finalUrl
+                        }, function(response) {
+                            request.get(todoListUrl, function(error, response, body) {
+                                if (error) {
+                                    console.error(error);
+                                }
+                                assert.equal(JSON.parse(body).length, 3);
+                                done();
+                            });
+                        });
+                    });
+                });
+            });
         });
     });
     describe("update a todo", function() {
@@ -203,3 +235,71 @@ describe("server", function() {
         });
     });
 });
+
+function put3Incomplete(callback) {
+    request.post({
+        url: todoListUrl,
+        json: {
+            title: "This is a TODO item",
+            isComplete: false
+        }
+    }, function() {
+        request.post({
+            url: todoListUrl,
+            json: {
+                title: "This is a TODO item",
+                isComplete: false
+            }
+        }, function() {
+            request.post({
+                url: todoListUrl,
+                json: {
+                    title: "This is a TODO item",
+                    isComplete: false
+                }
+            }, function() {
+                request.get(todoListUrl, function (error, response, body) {
+                    if (error) {
+                        console.error(error);
+                        return;
+                    }
+                    if (callback) {
+                        callback(body);
+                    }
+                });
+            });
+        });
+    });
+}
+function put3Complete(id1, id2, id3, callback) {
+    request.put({
+        url: todoListUrl + "/" + id1,
+        json: {
+            isComplete: true
+        }
+    }, function() {
+        request.put({
+            url: todoListUrl + "/" + id2,
+            json: {
+                  isComplete: true
+              }
+        }, function() {
+              request.put({
+                  url: todoListUrl + "/" + id3,
+                  json: {
+                      isComplete: true
+                  }
+              }, function() {
+                  request.get(todoListUrl, function (error, response, body) {
+                      if (error) {
+                          console.error(error);
+                          return;
+                      }
+                      if (callback) {
+                          callback(body);
+                      }
+                  });
+              });
+          });
+    });
+}

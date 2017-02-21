@@ -35,12 +35,9 @@ module.exports = function(port, middleware, callback) {
     // Delete
     app.delete("/api/todo/:id", function(req, res) {
         var id = req.params.id;
-        console.log(id);
         if (id === "complete") {
-            todos = todos.filter(function(todo) {
-                return todo.isComplete !== true;
-            });
-            res.sendStatus(status.ok);
+            todos = getInComplete(todos);
+            res.sendStatus(status.notFound);
         } else {
             var todo = getTodo(id);
             if (todo) {
@@ -56,7 +53,6 @@ module.exports = function(port, middleware, callback) {
 
     // Update
     app.put("/api/todo/:id", function(req, res) {
-        console.log(req.body);
         var id = req.params.id;
         var todo = getTodo(id);
         if (todo) {
@@ -77,9 +73,9 @@ module.exports = function(port, middleware, callback) {
             return todo.id === id;
         });
     }
-    function getComplete() {
+    function getInComplete() {
         return todos.filter(function(todo) {
-            return todo.isComplete;
+            return !todo.isComplete;
         });
     }
 
