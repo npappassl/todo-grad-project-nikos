@@ -52,14 +52,14 @@ function getTodoList(callback) {
     createRequest.send();
 }
 
-function deleteTodo(id, callback) {
+function deleteTodo(todo, callback) {
     var createRequest = new XMLHttpRequest();
-    createRequest.open("DELETE", "/api/todo/" + id);
+    createRequest.open("DELETE", "/api/todo/" + todo.id);
     createRequest.onload = function() {
         if (this.status === 200) {
             callback();
         } else {
-            window.alert("could not delete item " + id);
+            window.alert("could not delete item " + todo.id);
         }
     };
     createRequest.send();
@@ -142,9 +142,9 @@ function updateListItemDB(id, inputTxt, callback) {
     };
 }
 
-function doneTodo(id, callback) {
+function doneTodo(todo, callback) {
     var createRequest = new XMLHttpRequest();
-    createRequest.open("PUT", "/api/todo/" + id);
+    createRequest.open("PUT", "/api/todo/" + todo.id);
     createRequest.setRequestHeader("Content-type", "application/json");
     createRequest.send(JSON.stringify({
         isComplete: true
@@ -181,9 +181,9 @@ function createListItem(todo) {
     return listItem;
 }
 
-function createItemButton(todo, char, id, action) {
+function createItemButton(todo, char, butId, action) {
     var button = document.createElement("button");
-    button.id = id + todo.id;
+    button.id = butId + todo.id;
     button.innerHTML = char;
     button.onclick = function() {
         action(todo, reloadTodoList);
