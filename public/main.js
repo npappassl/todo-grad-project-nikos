@@ -210,7 +210,7 @@ function createListItem(todo) {
     listItem.appendChild(numbering);
     listItem.appendChild(todoText);
     buttonSpan.appendChild(deleteButton);
-    if(!todo.isComplete){
+    if (!todo.isComplete) {
         var completeButton = createItemButton(todo, specChar.tick, "comp", doneTodo);
         buttonSpan.appendChild(completeButton);
     }

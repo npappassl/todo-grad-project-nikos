@@ -17,7 +17,7 @@ header {
 }
 header h1 {
     text-shadow: 2px 2px black;
-    padding-top: 1em;
+    padding-top: 0.7em;
     padding-bottom: 0.3em;
     font-weight: 200;
     font-size: 40px;
