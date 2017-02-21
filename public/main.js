@@ -89,9 +89,35 @@ function reloadTodoList() {
                 }
             }
         });
+        addDeleteAllButton();
         updateLabel(listLength);
     });
 }
+
+function addDeleteAllButton() {
+    if (activatedTab === 0) {
+        var but = document.createElement("button");
+        but.innerHTML = "Delete all";
+        but.onclick = function () {
+            deleteAllComplete();
+        };
+        document.getElementById("todo-list").appendChild(but);
+    }
+}
+
+function deleteAllComplete(callback) {
+    var createRequest = new XMLHttpRequest();
+    createRequest.open("DELETE", "/api/todo/complete");
+    createRequest.onload = function() {
+        if (this.status === 200) {
+            callback();
+        } else {
+            window.alert("could not delete items");
+        }
+    };
+    createRequest.send();
+}
+
 function updateListItem(todo, callback) {
     console.log(li);
     var textUpdateSpan = document.createElement("span");
