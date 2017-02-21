@@ -45,16 +45,33 @@ function createTodo(title, callback) {
 }
 
 function getTodoList(callback) {
-    var createRequest = new XMLHttpRequest();
-    createRequest.open("GET", "/api/todo");
-    createRequest.onload = function() {
-        if (this.status === 200) {
-            callback(JSON.parse(this.responseText));
-        } else {
-            error.textContent = "Failed to get list. Server returned " + this.status + " - " + this.responseText;
-        }
+    var fetchProps = {
+        method: "GET"
     };
-    createRequest.send();
+    fetch("/api/todo", fetchProps)
+        .then(checkStatus)
+        .then(parseJSON)
+        .then(function(response) {
+            callback(response);
+        }).catch(function(err) {
+            console.error(err);
+            error.textContent = "Failed to get list. Server returned " +
+                err.response.status + " - " + err.response.statusText;
+        });
+}
+
+function checkStatus(response) {
+    if (response.status >= 200 && response.status < 300) {
+        return response;
+    } else {
+        var error = new Error(response.statusText);
+        error.response = response;
+        throw error;
+    }
+}
+
+function parseJSON(response) {
+    return response.json();
 }
 
 function deleteTodo(todo, callback) {
@@ -258,5 +275,15 @@ function updateLabel(listLength) {
             label.innerHTML = "There are " + listLength + " TODOs either complete or not";
         }
     }
+}
+function fetchRequest() {
+    var promise = fetch("/api/todo/");
+    promise.then(function (response) {
+        console.log("promise fullfilled");
+        console.log(response.json());
+    }, function() {
+        console.log("promise not fullfilled");
+    });
+    console.log(promise);
 }
 reloadTodoList();
