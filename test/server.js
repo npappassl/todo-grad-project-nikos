@@ -1,7 +1,6 @@
 var server = require("../server/server");
 var request = require("request");
 var assert = require("chai").assert;
-var help = require("./serverHelper");
 
 var testPort = 52684;
 var baseUrl = "http://localhost:" + testPort;
