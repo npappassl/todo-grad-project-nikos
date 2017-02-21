@@ -19,7 +19,7 @@ module.exports = function(port, middleware, callback) {
     // Create
     app.post("/api/todo", function(req, res) {
         var todo = req.body;
-        todo.done = false;
+        todo.isComplete = false;
         todo.id = latestId.toString();
         latestId++;
         todos.push(todo);
@@ -55,8 +55,8 @@ module.exports = function(port, middleware, callback) {
             if (req.body.title) {
                 todo.title = req.body.title;
             }
-            if (req.body.done) {
-                todo.done = req.body.done;
+            if (req.body.isComplete) {
+                todo.isComplete = req.body.isComplete;
             }
             res.sendStatus(status.ok);
         } else {

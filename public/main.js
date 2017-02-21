@@ -3,7 +3,9 @@ var todoListPlaceholder = document.getElementById("todo-list-placeholder");
 var form = document.getElementById("todo-form");
 var todoTitle = document.getElementById("new-todo");
 var error = document.getElementById("error");
+var specChar = {"tick": "&#x2713;", "pen": "&#x2712;"};
 var activatedTab = 1;
+
 form.onsubmit = function(event) {
     var title = todoTitle.value;
     createTodo(title, function() {
@@ -25,7 +27,8 @@ function createTodo(title, callback) {
     createRequest.open("POST", "/api/todo");
     createRequest.setRequestHeader("Content-type", "application/json");
     createRequest.send(JSON.stringify({
-        title: title
+        title: title,
+        isComplete: false
     }));
     createRequest.onload = function() {
         if (this.status === 201) {
@@ -73,13 +76,13 @@ function reloadTodoList() {
         todoListPlaceholder.style.display = "none";
         todos.forEach(function(todo) {
             if (activatedTab === 0) {
-                if (todo.done) {
+                if (todo.isComplete) {
                     listLength++;
                     listItem = createListItem(todo);
                     todoList.appendChild(listItem);
                 }
             } else {
-                if (!todo.done) {
+                if (!todo.isComplete) {
                     listLength++;
                     listItem = createListItem(todo);
                     todoList.appendChild(listItem);
@@ -90,18 +93,19 @@ function reloadTodoList() {
     });
 }
 function updateListItem(todo, callback) {
+    console.log(li);
     var textUpdateSpan = document.createElement("span");
     textUpdateSpan.className = "updateSpan";
     var inputTxt = document.createElement("input");
     inputTxt.className = "updateTxt";
-
     var li = document.getElementById("li" + todo.id);
     inputTxt.type = "text";
     inputTxt.value = todo.title;
+    console.log(todo);
 
     var inputSubmit = document.createElement("button");
     inputSubmit.type = "submit";
-    inputSubmit.innerHTML = "&#x2713;";
+    inputSubmit.innerHTML = specChar.tick;
     inputSubmit.className = "confirmUpdate";
     inputSubmit.onclick = function () {
         updateListItemDB(todo.id, inputTxt, callback);
@@ -120,6 +124,7 @@ function updateListItem(todo, callback) {
         li.appendChild(textUpdateSpan);
     }
 }
+
 function updateListItemDB(id, inputTxt, callback) {
     var createRequest = new XMLHttpRequest();
     var title = inputTxt.value;
@@ -142,7 +147,7 @@ function doneTodo(id, callback) {
     createRequest.open("PUT", "/api/todo/" + id);
     createRequest.setRequestHeader("Content-type", "application/json");
     createRequest.send(JSON.stringify({
-        done: true
+        isComplete: true
     }));
     createRequest.onload = function () {
         if (this.status === 200) {
@@ -162,24 +167,10 @@ function createListItem(todo) {
     var todoText = document.createElement("span");
     todoText.className = "todoTextBody";
     todoText.textContent = todo.title;
-    var updateButton = document.createElement("button");
-    updateButton.id = "update" + todo.id;
-    updateButton.innerHTML = "&#x2712;";
-    updateButton.onclick = function() {
-        updateListItem(todo, reloadTodoList);
-    };
-    var completeButton = document.createElement("button");
-    completeButton.id = "comp" + todo.id;
-    completeButton.innerHTML = "&#x2713;";
-    completeButton.onclick = function() {
-        doneTodo(todo.id, reloadTodoList);
-    };
-    var deleteButton = document.createElement("button");
-    deleteButton.id = "del" + todo.id;
-    deleteButton.innerHTML = "X";
-    deleteButton.onclick = function() {
-        deleteTodo(todo.id, reloadTodoList);
-    };
+
+    var updateButton = createItemButton(todo, specChar.pen, "update", updateListItem);
+    var completeButton = createItemButton(todo, specChar.tick, "comp", doneTodo);
+    var deleteButton = createItemButton(todo, "X", "del", deleteTodo);
 
     listItem.appendChild(numbering);
     listItem.appendChild(todoText);
@@ -189,6 +180,17 @@ function createListItem(todo) {
 
     return listItem;
 }
+
+function createItemButton(todo, char, id, action) {
+    var button = document.createElement("button");
+    button.id = id + todo.id;
+    button.innerHTML = char;
+    button.onclick = function() {
+        action(todo, reloadTodoList);
+    };
+    return button;
+}
+
 function updateLabel(listLength) {
     var label = document.getElementById("count-label");
     if (activatedTab === 0) {
