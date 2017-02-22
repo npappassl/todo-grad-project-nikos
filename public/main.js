@@ -158,7 +158,6 @@ function addDeleteAllButton(completeLength) {
 //     return button;
 // }
 
-
 function updateListItem(todo, callback) {
     var textUpdateSpan = document.createElement("span");
     textUpdateSpan.className = "updateSpan";
