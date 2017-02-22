@@ -16,6 +16,7 @@ module.exports = function(port, middleware, callback) {
     var latestId = 0;
     var todos = [];
     var lastDeleted = [];
+    var stateChangeId = 0;
 
     // Create
     app.post("/api/todo", function(req, res) {
@@ -23,6 +24,7 @@ module.exports = function(port, middleware, callback) {
         todo.isComplete = false;
         todo.id = latestId.toString();
         latestId++;
+        stateChangeId++;
         todos.push(todo);
         res.set("Location", "/api/todo/" + todo.id);
         res.sendStatus(status.created);
@@ -30,7 +32,13 @@ module.exports = function(port, middleware, callback) {
 
     // Read
     app.get("/api/todo", function(req, res) {
-        res.json(todos);
+        res.json({
+            todos: todos,
+            state: stateChangeId
+        });
+    });
+    app.get("/api/todo/state", function(req, res) {
+        res.json(stateChangeId);
     });
 
     // Delete
@@ -39,6 +47,7 @@ module.exports = function(port, middleware, callback) {
         if (id === "complete") {
             lastDeleted = getComplete();
             todos = getInComplete();
+            stateChangeId++;
             res.sendStatus(status.ok);
         } else {
             var todo = getTodo(id);
@@ -47,6 +56,7 @@ module.exports = function(port, middleware, callback) {
                 todos = todos.filter(function(otherTodo) {
                     return otherTodo !== todo;
                 });
+                stateChangeId++;
                 res.sendStatus(status.ok);
             } else {
                 res.sendStatus(status.notFound);
@@ -64,6 +74,7 @@ module.exports = function(port, middleware, callback) {
                     return parseInt(a.id) > parseInt(b.id) ? 1 : -1;
                 });
                 lastDeleted = [];
+                stateChangeId++;
                 res.sendStatus(status.ok);
             } else {
                 res.sendStatus(status.notFound);
@@ -77,6 +88,7 @@ module.exports = function(port, middleware, callback) {
                 if (req.body.isComplete) {
                     todo.isComplete = req.body.isComplete;
                 }
+                stateChangeId++;
                 res.sendStatus(status.ok);
             } else {
                 res.sendStatus(status.notFound);

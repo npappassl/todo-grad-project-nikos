@@ -6,8 +6,8 @@ var error = document.getElementById("error");
 var specChar = {"tick": "&#x2713;", "pen": "&#x2712;"};
 var statusCode = {"notFound": 404, "ok": 200, "created": 201};
 var activatedTab = 1;
-// var intervalMain = window.setInterval(reloadTodoList, 25000);
-
+var intervalMain = window.setInterval(isStateUpdated, 5000);
+var stateId = 0;
 form.onsubmit = function(event) {
     var title = todoTitle.value;
     createTodo(title, function() {
@@ -16,6 +16,23 @@ form.onsubmit = function(event) {
     todoTitle.value = "";
     event.preventDefault();
 };
+
+function isStateUpdated() {
+    fetch("api/todo/state")
+        .then(checkStatusOK)
+        .then(parseJSON)
+        .then(function(response) {
+            console.log(response + " " + stateId);
+            if (response !== stateId) {
+                stateId = response;
+                reloadTodoList();
+            }
+        }).catch(function(err) {
+            console.log(err);
+            error.textContent = "Failed get server state. Server returned " +
+                err.response.status + " - " + err.response.statusText;
+        });
+}
 
 function activateTab(num) {
     var nav = document.getElementsByTagName("nav")[0].getElementsByTagName("span");
@@ -58,7 +75,8 @@ function getTodoList(callback) {
         .then(checkStatusOK)
         .then(parseJSON)
         .then(function(response) {
-            callback(response);
+            stateId = parseInt(response.state);
+            callback(response.todos);
         }).catch(function(err) {
             console.error(err);
             error.textContent = "Failed to get list. Server returned " +
@@ -70,18 +88,18 @@ function checkStatusOK(response) {
     if (response.status === statusCode.ok) {
         return response;
     } else {
-        var error = new Error(response.statusText);
-        error.response = response;
-        throw error;
+        var err = new Error(response.statusText);
+        err.response = response;
+        throw err;
     }
 }
 function checkStatusCreated(response) {
     if (response.status === statusCode.created) {
         return response;
     } else {
-        var error = new Error(response.statusText);
-        error.response = response;
-        throw error;
+        var err = new Error(response.statusText);
+        err.response = response;
+        throw err;
     }
 }
 
@@ -310,3 +328,4 @@ function updateLabel(listLength) {
 }
 
 reloadTodoList();
+isStateUpdated();
