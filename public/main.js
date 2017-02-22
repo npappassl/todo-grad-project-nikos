@@ -170,15 +170,6 @@ function addDeleteAllButton(completeLength) {
         document.getElementById("todo-list").appendChild(but);
     }
 }
-// function createItemButton(todo, char, butId, action) {
-//     var button = document.createElement("button");
-//     button.id = butId + todo.id;
-//     button.innerHTML = char;
-//     button.onclick = function() {
-//         action(todo, reloadTodoList);
-//     };
-//     return button;
-// }
 
 function updateListItem(todo, callback) {
     var textUpdateSpan = document.createElement("span");
