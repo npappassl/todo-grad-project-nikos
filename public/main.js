@@ -317,14 +317,5 @@ function updateLabel(listLength) {
         }
     }
 }
-function fetchRequest() {
-    var promise = fetch("/api/todo/complete", {method: "DELETE"});
-    promise.then(function (response) {
-        console.log("promise fullfilled");
-        console.log(response.json());
-    }, function() {
-        console.log("promise not fullfilled");
-    });
-    console.log(promise);
-}
+
 reloadTodoList();
