@@ -75,8 +75,8 @@ function getTodoList(callback) {
         .then(checkStatusOK)
         .then(parseJSON)
         .then(function(response) {
-            // stateId = parseInt(response.state);
-            callback(response);
+            stateId = parseInt(response.state);
+            callback(response.todos);
         }).catch(function(err) {
             console.error(err);
             error.textContent = "Failed to get list. Server returned " +

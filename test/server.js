@@ -29,7 +29,7 @@ describe("server", function() {
         });
         it("responds with a body that is a JSON empty array", function(done) {
             request(todoListUrl, function(error, response, body) {
-                assert.equal(body, "[]");
+                assert.equal(body,  "{\"todos\":[],\"state\":0}");
                 done();
             });
         });
@@ -68,7 +68,7 @@ describe("server", function() {
                 }
             }, function() {
                 request.get(todoListUrl, function(error, response, body) {
-                    assert.deepEqual(JSON.parse(body), [{
+                    assert.deepEqual(JSON.parse(body).todos, [{
                         title: "This is a TODO item",
                         isComplete: false,
                         id: "0"
@@ -109,7 +109,7 @@ describe("server", function() {
             }, function() {
                 request.del(todoListUrl + "/0", function() {
                     request.get(todoListUrl, function(error, response, body) {
-                        assert.deepEqual(JSON.parse(body), []);
+                        assert.deepEqual(JSON.parse(body).todos, []);
                         done();
                     });
                 });
@@ -119,12 +119,12 @@ describe("server", function() {
     describe("delete no incomplete", function() {
         it("no incomplete is deleted", function(done) {
             put3Incomplete(function(body) {
-                assert.deepEqual(JSON.parse(body), [{title: "This is a TODO item", isComplete: false, id: "0"},
+                assert.deepEqual(JSON.parse(body).todos, [{title: "This is a TODO item", isComplete: false, id: "0"},
                                                     {title: "This is a TODO item", isComplete: false, id: "1"},
                                                     {title: "This is a TODO item", isComplete: false, id: "2"}]);
                 request.del(todoListUrl + "/complete", function (error, response) {
                     request.get(todoListUrl, function(error, response, body) {
-                        assert.deepEqual(JSON.parse(body),
+                        assert.deepEqual(JSON.parse(body).todos,
                             [{title: "This is a TODO item", isComplete: false, id: "0"},
                             {title: "This is a TODO item", isComplete: false, id: "1"},
                             {title: "This is a TODO item", isComplete: false, id: "2"}]);
@@ -141,7 +141,7 @@ describe("server", function() {
             put3Incomplete(function() {
                 put3Incomplete(function() {
                     put3Complete(1, 3, 4, function(body) {
-                        assert.deepEqual(((JSON.parse(body))), [
+                        assert.deepEqual(((JSON.parse(body).todos)), [
                             {title: "This is a TODO item", isComplete: false, id: "0"},
                             {title: "This is a TODO item", isComplete: true, id: "1"},
                             {title: "This is a TODO item", isComplete: false, id: "2"},
@@ -157,7 +157,7 @@ describe("server", function() {
                                 if (error) {
                                     console.error(error);
                                 }
-                                assert.equal(JSON.parse(body).length, 3);
+                                assert.equal(JSON.parse(body).todos.length, 3);
                                 done();
                             });
                         });
@@ -183,7 +183,8 @@ describe("server", function() {
                 }, function() {
                     request.get(todoListUrl, function(error, response, body) {
                         if (response.statusCode === 200) {
-                            assert.deepEqual(JSON.parse(body), [{title: "this is edited", isComplete: false, id: "0"}]);
+                            assert.deepEqual(JSON.parse(body).todos,
+                                [{title: "this is edited", isComplete: false, id: "0"}]);
                             done();
                         }else {
                             assert.equal(response.statusCode, 404);
@@ -220,7 +221,7 @@ describe("server", function() {
                 }, function() {
                     request.get(todoListUrl, function(error, response, body) {
                         if (response.statusCode === 200) {
-                            assert.deepEqual(JSON.parse(body),
+                            assert.deepEqual(JSON.parse(body).todos,
                              [{title: "This is a TODO item", isComplete: true, id: "0"}]);
                             done();
                         }else {

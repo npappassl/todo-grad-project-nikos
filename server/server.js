@@ -32,7 +32,10 @@ module.exports = function(port, middleware, callback) {
 
     // Read
     app.get("/api/todo", function(req, res) {
-        res.json(todos);
+        res.json({
+            todos: todos,
+            state: stateChangeId
+        });
     });
     app.get("/api/todo/state", function(req, res) {
         res.json(stateChangeId);
