@@ -141,7 +141,7 @@ describe("server", function() {
             put3Incomplete(function() {
                 put3Incomplete(function() {
                     put3Complete(1, 3, 4, function(body) {
-                        assert.deepEqual(JSON.parse(body), [
+                        assert.deepEqual(((JSON.parse(body))), [
                             {title: "This is a TODO item", isComplete: false, id: "0"},
                             {title: "This is a TODO item", isComplete: true, id: "1"},
                             {title: "This is a TODO item", isComplete: false, id: "2"},
@@ -150,7 +150,6 @@ describe("server", function() {
                             {title: "This is a TODO item", isComplete: false, id: "5"}]);
                         var finalUrl = todoListUrl + "/complete";
                         request({
-
                             method: "DELETE",
                             url: finalUrl
                         }, function(response) {
