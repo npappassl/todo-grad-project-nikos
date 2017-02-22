@@ -42,9 +42,8 @@ function createTodo(title, callback) {
     };
     var promise = fetch("/api/todo", fetchProps);
     promise.then(checkStatusCreated)
-        .then(function(response) {
-            callback(response);
-        }).catch(function(err) {
+        .then(callback)
+        .catch(function(err) {
             console.error(err);
             error.textContent = "Failed to create item. Server returned " +
                 err.response.status + " - " + err.response.statusText;
@@ -149,6 +148,16 @@ function addDeleteAllButton(completeLength) {
         document.getElementById("todo-list").appendChild(but);
     }
 }
+// function createItemButton(todo, char, butId, action) {
+//     var button = document.createElement("button");
+//     button.id = butId + todo.id;
+//     button.innerHTML = char;
+//     button.onclick = function() {
+//         action(todo, reloadTodoList);
+//     };
+//     return button;
+// }
+
 
 function updateListItem(todo, callback) {
     var textUpdateSpan = document.createElement("span");
