@@ -4,6 +4,7 @@ var form = document.getElementById("todo-form");
 var todoTitle = document.getElementById("new-todo");
 var error = document.getElementById("error");
 var specChar = {"tick": "&#x2713;", "pen": "&#x2712;"};
+var statusCode = {"notFound": 404, "ok": 200, "created": 201};
 var activatedTab = 1;
 
 form.onsubmit = function(event) {
@@ -40,7 +41,7 @@ function createTodo(title, callback) {
         body: reqBody
     };
     var promise = fetch("/api/todo", fetchProps);
-    promise.then(checkStatus)
+    promise.then(checkStatusCreated)
         .then(function(response) {
             callback(response);
         }).catch(function(err) {
@@ -54,7 +55,7 @@ function getTodoList(callback) {
         method: "GET"
     };
     fetch("/api/todo", fetchProps)
-        .then(checkStatus)
+        .then(checkStatusOK)
         .then(parseJSON)
         .then(function(response) {
             callback(response);
@@ -65,8 +66,17 @@ function getTodoList(callback) {
         });
 }
 
-function checkStatus(response) {
-    if (response.status >= 200 && response.status < 300) {
+function checkStatusOK(response) {
+    if (response.status === statusCode.ok) {
+        return response;
+    } else {
+        var error = new Error(response.statusText);
+        error.response = response;
+        throw error;
+    }
+}
+function checkStatusCreated(response) {
+    if (response.status === statusCode.created) {
         return response;
     } else {
         var error = new Error(response.statusText);
@@ -87,7 +97,7 @@ function deleteTodo(todo, callback) {
     } else {
         promise = fetch("/api/todo/complete", fetchProps);
     }
-    promise.then(checkStatus)
+    promise.then(checkStatusOK)
         .then(function(response) {
             callback(response);
         }).catch(function(err) {
@@ -172,6 +182,7 @@ function updateListItem(todo, callback) {
 }
 
 function updateListItemDB(id, inputTxt, callback) {
+    
     var createRequest = new XMLHttpRequest();
     var title = inputTxt.value;
     createRequest.open("PUT", "/api/todo/" + id);
