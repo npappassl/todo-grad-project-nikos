@@ -182,37 +182,47 @@ function updateListItem(todo, callback) {
 }
 
 function updateListItemDB(id, inputTxt, callback) {
-    
-    var createRequest = new XMLHttpRequest();
-    var title = inputTxt.value;
-    createRequest.open("PUT", "/api/todo/" + id);
-    createRequest.setRequestHeader("Content-type", "application/json");
-    createRequest.send(JSON.stringify({
-        title: title
-    }));
-    createRequest.onload = function () {
-        if (this.status === 200) {
-            callback();
-        } else {
-            error.textContent = "Failed to update " + this.status + " - " + this.responseText;
-        }
+    var reqBody = JSON.stringify({
+        title: inputTxt
+    });
+    var fetchProps = {
+        method: "PUT",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body : reqBody
     };
+    var promise = fetch("/api/todo/" + id, fetchProps);
+    promise.then(checkStatusOK)
+        .then(function(response) {
+            callback(response);
+        }).catch(function(err) {
+            console.error(err);
+            error.textContent = "Failed to update " +
+                err.response.status + " - " + err.response.statusText;
+        });
 }
 
 function doneTodo(todo, callback) {
-    var createRequest = new XMLHttpRequest();
-    createRequest.open("PUT", "/api/todo/" + todo.id);
-    createRequest.setRequestHeader("Content-type", "application/json");
-    createRequest.send(JSON.stringify({
+    var reqBody = JSON.stringify({
         isComplete: true
-    }));
-    createRequest.onload = function () {
-        if (this.status === 200) {
-            callback();
-        } else {
-            error.textContent = "Failed to update " + this.status + " - " + this.responseText;
-        }
+    });
+    var fetchProps = {
+        method: "PUT",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body : reqBody
     };
+    var promise = fetch("/api/todo/" + todo.id, fetchProps);
+    promise.then(checkStatusOK)
+        .then(function(response) {
+            callback(response);
+        }).catch(function(err) {
+            console.error(err);
+            error.textContent = "Failed to update " +
+              err.response.status + " - " + err.response.statusText;
+        });
 }
 
 function createListItem(todo) {
