@@ -2,8 +2,6 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var _ = require("underscore");
 
-var status = {"notFound": 404, "ok": 200, "created": 201};
-
 module.exports = function(port, middleware, callback) {
     var app = express();
 
@@ -17,6 +15,7 @@ module.exports = function(port, middleware, callback) {
     var todos = [];
     var lastDeleted = [];
     var stateChangeId = 0;
+    var status = {"notFound": 404, "ok": 200, "created": 201};
 
     // Create
     app.post("/api/todo", function(req, res) {
