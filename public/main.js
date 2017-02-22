@@ -6,6 +6,7 @@ var error = document.getElementById("error");
 var specChar = {"tick": "&#x2713;", "pen": "&#x2712;"};
 var statusCode = {"notFound": 404, "ok": 200, "created": 201};
 var activatedTab = 1;
+// var intervalMain = window.setInterval(reloadTodoList, 25000);
 
 form.onsubmit = function(event) {
     var title = todoTitle.value;
