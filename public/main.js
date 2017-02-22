@@ -4,7 +4,9 @@ var form = document.getElementById("todo-form");
 var todoTitle = document.getElementById("new-todo");
 var error = document.getElementById("error");
 var specChar = {"tick": "&#x2713;", "pen": "&#x2712;"};
+var statusCode = {"notFound": 404, "ok": 200, "created": 201};
 var activatedTab = 1;
+// var intervalMain = window.setInterval(reloadTodoList, 25000);
 
 form.onsubmit = function(event) {
     var title = todoTitle.value;
@@ -28,46 +30,102 @@ function activateTab(num) {
     reloadTodoList();
 }
 function createTodo(title, callback) {
-    var createRequest = new XMLHttpRequest();
-    createRequest.open("POST", "/api/todo");
-    createRequest.setRequestHeader("Content-type", "application/json");
-    createRequest.send(JSON.stringify({
+    var reqBody = JSON.stringify({
         title: title,
         isComplete: false
-    }));
-    createRequest.onload = function() {
-        if (this.status === 201) {
-            callback();
-        } else {
-            error.textContent = "Failed to create item. Server returned " + this.status + " - " + this.responseText;
-        }
+    });
+    var fetchProps = {
+        method: "POST",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: reqBody
     };
+    var promise = fetch("/api/todo", fetchProps);
+    promise.then(checkStatusCreated)
+        .then(callback)
+        .catch(function(err) {
+            console.error(err);
+            error.textContent = "Failed to create item. Server returned " +
+                err.response.status + " - " + err.response.statusText;
+        });
+}
+function getTodoList(callback) {
+    var fetchProps = {
+        method: "GET"
+    };
+    fetch("/api/todo", fetchProps)
+        .then(checkStatusOK)
+        .then(parseJSON)
+        .then(function(response) {
+            callback(response);
+        }).catch(function(err) {
+            console.error(err);
+            error.textContent = "Failed to get list. Server returned " +
+                err.response.status + " - " + err.response.statusText;
+        });
 }
 
-function getTodoList(callback) {
-    var createRequest = new XMLHttpRequest();
-    createRequest.open("GET", "/api/todo");
-    createRequest.onload = function() {
-        if (this.status === 200) {
-            callback(JSON.parse(this.responseText));
-        } else {
-            error.textContent = "Failed to get list. Server returned " + this.status + " - " + this.responseText;
-        }
-    };
-    createRequest.send();
+function checkStatusOK(response) {
+    if (response.status === statusCode.ok) {
+        return response;
+    } else {
+        var error = new Error(response.statusText);
+        error.response = response;
+        throw error;
+    }
+}
+function checkStatusCreated(response) {
+    if (response.status === statusCode.created) {
+        return response;
+    } else {
+        var error = new Error(response.statusText);
+        error.response = response;
+        throw error;
+    }
+}
+
+function parseJSON(response) {
+    return response.json();
 }
 
 function deleteTodo(todo, callback) {
-    var createRequest = new XMLHttpRequest();
-    createRequest.open("DELETE", "/api/todo/" + todo.id);
-    createRequest.onload = function() {
-        if (this.status === 200) {
-            callback();
-        } else {
-            window.alert("could not delete item " + todo.id);
-        }
-    };
-    createRequest.send();
+    var fetchProps = {method: "DELETE"};
+    var promise;
+    if (todo) {
+        promise = fetch("/api/todo/" + todo.id, fetchProps);
+    } else {
+        promise = fetch("/api/todo/complete", fetchProps);
+    }
+    promise.then(checkStatusOK)
+        .then(function(response) {
+            callback(response);
+            showUndoSpan();
+        }).catch(function(err) {
+            console.error(err);
+            error.textContent = "Failed to delete item(s). Server returned " +
+              err.response.status + " - " + err.response.statusText;
+        });
+}
+
+function undoDelete() {
+    hideUndoSpan();
+    var fetchProps = {method: "PUT"};
+    var promise = fetch("api/todo/undo", fetchProps);
+    promise.then(checkStatusOK)
+        .then(reloadTodoList)
+        .catch(function(err) {
+            console.error(err);
+            error.textContent = "Failed to undo. Server returned " +
+              err.response.status + " - " + err.response.statusText;
+        });
+}
+function showUndoSpan() {
+    document.getElementById("undoSpan").style.display = "inline-block";
+    window.setTimeout(hideUndoSpan, 5000);
+}
+function hideUndoSpan() {
+    document.getElementById("undoSpan").style.display = "none";
 }
 
 function reloadTodoList() {
@@ -107,27 +165,22 @@ function addDeleteAllButton(completeLength) {
         but.innerHTML = "Delete Complete";
         but.id = "deleteComplete";
         but.onclick = function () {
-            deleteAllComplete(reloadTodoList);
+            deleteTodo(null, reloadTodoList);
         };
         document.getElementById("todo-list").appendChild(but);
     }
 }
-
-function deleteAllComplete(callback) {
-    var createRequest = new XMLHttpRequest();
-    createRequest.open("DELETE", "/api/todo/complete");
-    createRequest.onload = function() {
-        if (this.status === 200) {
-            callback();
-        } else {
-            window.alert("could not delete items");
-        }
-    };
-    createRequest.send();
-}
+// function createItemButton(todo, char, butId, action) {
+//     var button = document.createElement("button");
+//     button.id = butId + todo.id;
+//     button.innerHTML = char;
+//     button.onclick = function() {
+//         action(todo, reloadTodoList);
+//     };
+//     return button;
+// }
 
 function updateListItem(todo, callback) {
-    console.log(li);
     var textUpdateSpan = document.createElement("span");
     textUpdateSpan.className = "updateSpan";
     var inputTxt = document.createElement("input");
@@ -135,21 +188,15 @@ function updateListItem(todo, callback) {
     var li = document.getElementById("li" + todo.id);
     inputTxt.type = "text";
     inputTxt.value = todo.title;
-    console.log(todo);
 
-    var inputSubmit = document.createElement("button");
-    inputSubmit.type = "submit";
-    inputSubmit.innerHTML = specChar.tick;
-    inputSubmit.className = "confirmUpdate";
-    inputSubmit.onclick = function () {
+    var inputSubmit = createItemButton(todo, specChar.tick, "conf", function () {
         updateListItemDB(todo.id, inputTxt, callback);
-    };
+    });
+    inputSubmit.className = "confirmUpdate";
 
-    var cancelUpdate = document.createElement("button");
-    cancelUpdate.innerHTML = "X";
-    cancelUpdate.onclick = function() {
+    var cancelUpdate = createItemButton(todo, "X", "cancUp", function() {
         li.removeChild(textUpdateSpan);
-    };
+    });
 
     textUpdateSpan.appendChild(cancelUpdate);
     textUpdateSpan.appendChild(inputSubmit);
@@ -160,36 +207,47 @@ function updateListItem(todo, callback) {
 }
 
 function updateListItemDB(id, inputTxt, callback) {
-    var createRequest = new XMLHttpRequest();
-    var title = inputTxt.value;
-    createRequest.open("PUT", "/api/todo/" + id);
-    createRequest.setRequestHeader("Content-type", "application/json");
-    createRequest.send(JSON.stringify({
-        title: title
-    }));
-    createRequest.onload = function () {
-        if (this.status === 200) {
-            callback();
-        } else {
-            error.textContent = "Failed to update " + this.status + " - " + this.responseText;
-        }
+    var reqBody = JSON.stringify({
+        title: inputTxt.value
+    });
+    var fetchProps = {
+        method: "PUT",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body : reqBody
     };
+    var promise = fetch("/api/todo/" + id, fetchProps);
+    promise.then(checkStatusOK)
+        .then(function(response) {
+            callback(response);
+        }).catch(function(err) {
+            console.error(err);
+            error.textContent = "Failed to update " +
+                err.response.status + " - " + err.response.statusText;
+        });
 }
 
 function doneTodo(todo, callback) {
-    var createRequest = new XMLHttpRequest();
-    createRequest.open("PUT", "/api/todo/" + todo.id);
-    createRequest.setRequestHeader("Content-type", "application/json");
-    createRequest.send(JSON.stringify({
+    var reqBody = JSON.stringify({
         isComplete: true
-    }));
-    createRequest.onload = function () {
-        if (this.status === 200) {
-            callback();
-        } else {
-            error.textContent = "Failed to update " + this.status + " - " + this.responseText;
-        }
+    });
+    var fetchProps = {
+        method: "PUT",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body : reqBody
     };
+    var promise = fetch("/api/todo/" + todo.id, fetchProps);
+    promise.then(checkStatusOK)
+        .then(function(response) {
+            callback(response);
+        }).catch(function(err) {
+            console.error(err);
+            error.textContent = "Failed to update " +
+              err.response.status + " - " + err.response.statusText;
+        });
 }
 
 function createListItem(todo) {
@@ -259,4 +317,5 @@ function updateLabel(listLength) {
         }
     }
 }
+
 reloadTodoList();

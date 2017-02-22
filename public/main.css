@@ -58,6 +58,34 @@ nav span.active:hover{
   color: black;
   font-weight: 900;
 }
+#undoSpan{
+    height: 5em;
+    position:relative;
+    top:100px;
+    background-color: rgb(80,31,52);
+    display: none;
+    transition: all .5s ease;
+}
+#undoSpan:hover, #closePopup:hover{
+    border-radius: 0;
+    opacity: 1;
+    color: white;
+}
+#undoSpan a{
+    text-decoration:underline;
+}
+#undoSpan a:hover{
+    opacity: 0.7;
+}
+#closePopup{
+    cursor: pointer;
+    background-color: rgb(80,31,52);
+    font-size: 0.5em;
+    margin: 0;
+    display: block;
+    text-align: right;
+    width: 95%;
+}
 section,
 h1 {
     max-width: 1170px;
@@ -124,6 +152,7 @@ h1 {
     color: rgba(255, 255, 255, 0.87);
 }
 button,#submit-todo,.confirmUpdate{
+    cursor: pointer;
     padding: 0 0 0 0;
     margin: 0 0 0 0;
     border-color: #4A0E54;
