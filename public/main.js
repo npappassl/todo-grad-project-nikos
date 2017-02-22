@@ -85,13 +85,11 @@ function getTodoList(callback) {
 }
 
 function checkStatusOK(response) {
-    if (response) {
-        if (response.status === statusCode.ok) {
-            return response;
-        }
+    if (response.status === statusCode.ok) {
+        return response;
     } else {
         var err = new Error(response.statusText);
-        error.response = response;
+        err.response = response;
         throw err;
     }
 }
@@ -100,7 +98,7 @@ function checkStatusCreated(response) {
         return response;
     } else {
         var err = new Error(response.statusText);
-        error.response = response;
+        err.response = response;
         throw err;
     }
 }
