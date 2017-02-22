@@ -99,11 +99,32 @@ function deleteTodo(todo, callback) {
     promise.then(checkStatusOK)
         .then(function(response) {
             callback(response);
+            showUndoSpan();
         }).catch(function(err) {
             console.error(err);
             error.textContent = "Failed to delete item(s). Server returned " +
               err.response.status + " - " + err.response.statusText;
         });
+}
+
+function undoDelete() {
+    hideUndoSpan();
+    var fetchProps = {method: "PUT"};
+    var promise = fetch("api/todo/undo", fetchProps);
+    promise.then(checkStatusOK)
+        .then(reloadTodoList)
+        .catch(function(err) {
+            console.error(err);
+            error.textContent = "Failed to undo. Server returned " +
+              err.response.status + " - " + err.response.statusText;
+        });
+}
+function showUndoSpan() {
+    document.getElementById("undoSpan").style.display = "inline-block";
+    window.setTimeout(hideUndoSpan, 5000);
+}
+function hideUndoSpan() {
+    document.getElementById("undoSpan").style.display = "none";
 }
 
 function reloadTodoList() {
@@ -167,13 +188,11 @@ function updateListItem(todo, callback) {
     inputTxt.type = "text";
     inputTxt.value = todo.title;
 
-    var inputSubmit = document.createElement("button");
-    inputSubmit.type = "submit";
-    inputSubmit.innerHTML = specChar.tick;
-    inputSubmit.className = "confirmUpdate";
-    inputSubmit.onclick = function () {
+    var inputSubmit = createItemButton(todo, specChar.tick, "conf", function () {
         updateListItemDB(todo.id, inputTxt, callback);
-    };
+    });
+    inputSubmit.className = "confirmUpdate";
+
     var cancelUpdate = createItemButton(todo, "X", "cancUp", function() {
         li.removeChild(textUpdateSpan);
     });

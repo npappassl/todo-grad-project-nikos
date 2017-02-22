@@ -233,6 +233,47 @@ describe("server", function() {
             });
         });
     });
+    describe("undo delete", function() {
+        it("gets the same on the list", function(done) {
+            request.post({
+                url: todoListUrl,
+                json: {
+                    title: "This is a TODO item",
+                    isComplete: false
+                }
+            }, function(error, response) {
+                assert.equal(response.statusCode, 201);
+                request.post({
+                    url: todoListUrl,
+                    json: {
+                        title: "This is a TODO item",
+                        isComplete: false
+                    }
+                }, function(error, response) {
+                    assert.equal(response.statusCode, 201);
+                    request.del({
+                        url: todoListUrl + "/0"
+                    }, function(error, response) {
+                        assert.equal(response.statusCode, 200);
+                        request.put({
+                            url: todoListUrl + "/undo"
+                        }, function (error, response) {
+                            assert.equal(response.statusCode, 200);
+                            done();
+                        });
+                    });
+                });
+            });
+        });
+        it("return not found if the lastdeleted array is empty", function(done) {
+            request.put({
+                url: todoListUrl + "/undo"
+            }, function (error, response) {
+                assert.equal(response.statusCode, 404);
+                done();
+            });
+        });
+    });
 });
 
 function put3Incomplete(callback) {

@@ -15,6 +15,7 @@ module.exports = function(port, middleware, callback) {
 
     var latestId = 0;
     var todos = [];
+    var lastDeleted = [];
 
     // Create
     app.post("/api/todo", function(req, res) {
@@ -36,11 +37,13 @@ module.exports = function(port, middleware, callback) {
     app.delete("/api/todo/:id", function(req, res) {
         var id = req.params.id;
         if (id === "complete") {
-            todos = getInComplete(todos);
+            lastDeleted = getComplete();
+            todos = getInComplete();
             res.sendStatus(status.ok);
         } else {
             var todo = getTodo(id);
             if (todo) {
+                lastDeleted = [todo];
                 todos = todos.filter(function(otherTodo) {
                     return otherTodo !== todo;
                 });
@@ -54,23 +57,41 @@ module.exports = function(port, middleware, callback) {
     // Update
     app.put("/api/todo/:id", function(req, res) {
         var id = req.params.id;
-        var todo = getTodo(id);
-        if (todo) {
-            if (req.body.title) {
-                todo.title = req.body.title;
+        if (id === "undo") {
+            if (lastDeleted.length > 0) {
+                todos = todos.concat(lastDeleted);
+                todos.sort(function(a, b) {
+                    return parseInt(a.id) > parseInt(b.id) ? 1 : -1;
+                });
+                lastDeleted = [];
+                res.sendStatus(status.ok);
+            } else {
+                res.sendStatus(status.notFound);
             }
-            if (req.body.isComplete) {
-                todo.isComplete = req.body.isComplete;
-            }
-            res.sendStatus(status.ok);
         } else {
-            res.sendStatus(status.notFound);
+            var todo = getTodo(id);
+            if (todo) {
+                if (req.body.title) {
+                    todo.title = req.body.title;
+                }
+                if (req.body.isComplete) {
+                    todo.isComplete = req.body.isComplete;
+                }
+                res.sendStatus(status.ok);
+            } else {
+                res.sendStatus(status.notFound);
+            }
         }
     });
 
     function getTodo(id) {
         return _.find(todos, function(todo) {
             return todo.id === id;
+        });
+    }
+    function getComplete() {
+        return todos.filter(function(todo) {
+            return todo.isComplete;
         });
     }
     function getInComplete() {
