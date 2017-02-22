@@ -174,12 +174,9 @@ function updateListItem(todo, callback) {
     inputSubmit.onclick = function () {
         updateListItemDB(todo.id, inputTxt, callback);
     };
-
-    var cancelUpdate = document.createElement("button");
-    cancelUpdate.innerHTML = "X";
-    cancelUpdate.onclick = function() {
+    var cancelUpdate = createItemButton(todo, "X", "cancUp", function() {
         li.removeChild(textUpdateSpan);
-    };
+    });
 
     textUpdateSpan.appendChild(cancelUpdate);
     textUpdateSpan.appendChild(inputSubmit);
@@ -191,7 +188,7 @@ function updateListItem(todo, callback) {
 
 function updateListItemDB(id, inputTxt, callback) {
     var reqBody = JSON.stringify({
-        title: inputTxt
+        title: inputTxt.value
     });
     var fetchProps = {
         method: "PUT",
