@@ -8,6 +8,7 @@ var statusCode = {"notFound": 404, "ok": 200, "created": 201};
 var activatedTab = 1;
 var intervalMain = window.setInterval(isStateUpdated, 5000);
 var stateId = 0;
+
 form.onsubmit = function(event) {
     var title = todoTitle.value;
     createTodo(title, function() {
@@ -18,11 +19,10 @@ form.onsubmit = function(event) {
 };
 
 function isStateUpdated() {
-    fetch("api/todo/state")
-        .then(checkStatusOK)
+    var promise = fetch("api/todo/state");
+    promise.then(checkStatusOK)
         .then(parseJSON)
         .then(function(response) {
-            console.log(response + " " + stateId);
             if (response !== stateId) {
                 stateId = response;
                 reloadTodoList();

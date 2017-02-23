@@ -66,13 +66,18 @@ testing.describe("end to end", function() {
         });
     });
     testing.describe("on delete todo item", function() {
-        testing.it("get alert when item is not deleted", function() {
+        testing.it("after delete it is empty", function() {
             helpers.navigateToSite();
             helpers.addTodo("New todo item");
             helpers.deleteTodo(0);
             helpers.getTodoList().then(function(elements) {
                 assert.equal(elements.length, 0);
             });
+        });
+        testing.it("get eror message for not successfull delete", function() {
+            helpers.navigateToSite();
+            helpers.deleteTodo(0);
+            helpers.getErrorText();
         });
     });
 });
