@@ -75,9 +75,13 @@ testing.describe("end to end", function() {
             });
         });
         testing.it("get eror message for not successfull delete", function() {
+            helpers.setupErrorRoute("DELETE", "/api/todo/0");
             helpers.navigateToSite();
+            helpers.addTodo("NEw todo");
             helpers.deleteTodo(0);
-            helpers.getErrorText();
+            helpers.getErrorText().then(function(text) {
+                assert.equal(text, "Failed to delete item(s). Server returned 404 - Not Found");
+            });
         });
     });
 });

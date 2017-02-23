@@ -108,7 +108,9 @@ function checkStatusCreated(response) {
 function parseJSON(response) {
     return response.json();
 }
-
+var nakedTodo = {
+    id: 2
+};
 function deleteTodo(todo, callback) {
     var fetchProps = {method: "DELETE"};
     var promise;

@@ -64,7 +64,7 @@ module.exports.getInputText = function() {
 
 module.exports.getErrorText = function() {
     var errorElement = driver.findElement(webdriver.By.id("error"));
-    driver.wait(webdriver.until.elementTextContains(errorElement, "Failed"), 5000);
+    driver.wait(webdriver.until.elementTextContains(errorElement, "Failed"), 15000);
     return errorElement.getText();
 };
 
@@ -94,6 +94,11 @@ module.exports.setupErrorRoute = function(action, route) {
     if (action === "post") {
         router.post(route, function(req, res) {
             res.sendStatus(500);
+        });
+    }
+    if (action === "DELETE") {
+        router.delete(route, function(req, res) {
+            res.sendStatus(404);
         });
     }
 };
