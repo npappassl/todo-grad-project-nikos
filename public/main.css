@@ -177,6 +177,9 @@ button,#submit-todo,.confirmUpdate{
   font-size: 1.1em;
   outline-color: #4A0E54;
 }
+#count-label{
+    margin-top: 1em 1em 2em auto;
+}
 #deleteComplete{
   padding: 1em 0.5em 2em 0.5em;
 }
