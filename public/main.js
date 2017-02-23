@@ -46,6 +46,7 @@ function activateTab(num) {
     }
     reloadTodoList();
 }
+
 function createTodo(title, callback) {
     var reqBody = JSON.stringify({
         title: title,
@@ -67,6 +68,7 @@ function createTodo(title, callback) {
                 err.response.status + " - " + err.response.statusText;
         });
 }
+
 function getTodoList(callback) {
     var fetchProps = {
         method: "GET"
