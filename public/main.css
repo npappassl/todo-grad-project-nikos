@@ -163,12 +163,14 @@ button,#submit-todo,.confirmUpdate{
     display: block;
     float:right;
     transition: all .6s ease;
+    border-radius: 2px;
 }
 #submit-todo{
   float: none;
   display: inline-block;
   font-size:14px;
   margin-left: 1em;
+  height: 25px;
   color: white;
   padding: 0;
 }
