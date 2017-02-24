@@ -8,6 +8,7 @@ var statusCode = {"notFound": 404, "ok": 200, "created": 201};
 var activatedTab = 1;
 var intervalMain = window.setInterval(isStateUpdated, 5000);
 var stateId = 0;
+
 form.onsubmit = function(event) {
     var title = todoTitle.value;
     createTodo(title, function() {
@@ -18,24 +19,30 @@ form.onsubmit = function(event) {
 };
 
 function isStateUpdated() {
-    fetch("api/todo/state")
-        .then(checkStatusOK)
+    var promise = fetch("api/todo/state");
+    promise.then(checkStatusOK)
         .then(parseJSON)
-        .then(function(response) {
-            console.log(response + " " + stateId);
-            if (response !== stateId) {
-                stateId = response;
-                reloadTodoList();
-            }
-        }).catch(function(err) {
+        .then(updateView)
+        .catch(function(err) {
             console.log(err);
             error.textContent = "Failed get server state. Server returned " +
                 err.response.status + " - " + err.response.statusText;
         });
 }
 
+function updateView(response) {
+    if (response !== stateId) {
+        var updateSpans = document.
+            getElementsByClassName("updateTxt").length;
+        if (updateSpans === 0) {
+            stateId = response;
+            reloadTodoList();
+        }
+    }
+}
 function activateTab(num) {
-    var nav = document.getElementsByTagName("nav")[0].getElementsByTagName("span");
+    var nav = document.getElementsByTagName("nav")[0]
+        .getElementsByTagName("span");
     activatedTab = num;
     for (var i = 0;i < 3;i++) {
         if (num === i) {
@@ -46,6 +53,7 @@ function activateTab(num) {
     }
     reloadTodoList();
 }
+
 function createTodo(title, callback) {
     var reqBody = JSON.stringify({
         title: title,
@@ -67,6 +75,7 @@ function createTodo(title, callback) {
                 err.response.status + " - " + err.response.statusText;
         });
 }
+
 function getTodoList(callback) {
     var fetchProps = {
         method: "GET"
@@ -106,7 +115,9 @@ function checkStatusCreated(response) {
 function parseJSON(response) {
     return response.json();
 }
-
+var nakedTodo = {
+    id: 2
+};
 function deleteTodo(todo, callback) {
     var fetchProps = {method: "DELETE"};
     var promise;

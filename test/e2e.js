@@ -66,12 +66,21 @@ testing.describe("end to end", function() {
         });
     });
     testing.describe("on delete todo item", function() {
-        testing.it("get alert when item is not deleted", function() {
+        testing.it("after delete it is empty", function() {
             helpers.navigateToSite();
             helpers.addTodo("New todo item");
             helpers.deleteTodo(0);
             helpers.getTodoList().then(function(elements) {
                 assert.equal(elements.length, 0);
+            });
+        });
+        testing.it("get eror message for not successfull delete", function() {
+            helpers.setupErrorRoute("DELETE", "/api/todo/0");
+            helpers.navigateToSite();
+            helpers.addTodo("NEw todo");
+            helpers.deleteTodo(0);
+            helpers.getErrorText().then(function(text) {
+                assert.equal(text, "Failed to delete item(s). Server returned 404 - Not Found");
             });
         });
     });
