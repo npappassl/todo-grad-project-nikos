@@ -22,20 +22,27 @@ function isStateUpdated() {
     var promise = fetch("api/todo/state");
     promise.then(checkStatusOK)
         .then(parseJSON)
-        .then(function(response) {
-            if (response !== stateId) {
-                stateId = response;
-                reloadTodoList();
-            }
-        }).catch(function(err) {
+        .then(updateView)
+        .catch(function(err) {
             console.log(err);
             error.textContent = "Failed get server state. Server returned " +
                 err.response.status + " - " + err.response.statusText;
         });
 }
 
+function updateView(response) {
+    if (response !== stateId) {
+        var updateSpans = document.
+            getElementsByClassName("updateTxt").length;
+        if (updateSpans === 0) {
+            stateId = response;
+            reloadTodoList();
+        }
+    }
+}
 function activateTab(num) {
-    var nav = document.getElementsByTagName("nav")[0].getElementsByTagName("span");
+    var nav = document.getElementsByTagName("nav")[0]
+        .getElementsByTagName("span");
     activatedTab = num;
     for (var i = 0;i < 3;i++) {
         if (num === i) {
