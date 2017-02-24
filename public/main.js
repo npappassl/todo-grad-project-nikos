@@ -24,7 +24,7 @@ function isStateUpdated() {
         .then(parseJSON)
         .then(updateView)
         .catch(function(err) {
-            console.log(err);
+            console.error(err);
             error.textContent = "Failed get server state. Server returned " +
                 err.response.status + " - " + err.response.statusText;
         });
