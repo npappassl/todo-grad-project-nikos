@@ -24,7 +24,7 @@ function isStateUpdated() {
         .then(parseJSON)
         .then(updateView)
         .catch(function(err) {
-            console.log(err);
+            console.error(err);
             error.textContent = "Failed get server state. Server returned " +
                 err.response.status + " - " + err.response.statusText;
         });
@@ -115,9 +115,7 @@ function checkStatusCreated(response) {
 function parseJSON(response) {
     return response.json();
 }
-var nakedTodo = {
-    id: 2
-};
+
 function deleteTodo(todo, callback) {
     var fetchProps = {method: "DELETE"};
     var promise;
