@@ -8,6 +8,9 @@ var statusCode = {"notFound": 404, "ok": 200, "created": 201};
 var activatedTab = 1;
 var intervalMain = window.setInterval(isStateUpdated, 5000);
 var stateId = 0;
+var todosList =[];
+var angularList = [{title:"miios",isComplete:false,id:"0"},
+                   {title:"miios1",isComplete:false,id:"1"}];
 
 form.onsubmit = function(event) {
     var title = todoTitle.value;
@@ -160,17 +163,17 @@ function reloadTodoList() {
         todoList.removeChild(todoList.firstChild);
     }
     todoListPlaceholder.style.display = "block";
-    getTodoList(function(todos) {
-        todos = filterTodos(todos);
-        var listItem;
-        todoListPlaceholder.style.display = "none";
-        todos.forEach(function(todo) {
-            listItem = createListItem(todo);
-            todoList.appendChild(listItem);
-        });
-        addDeleteAllButton(todos.length);
-        updateLabel(todos.length);
-    });
+    // getTodoList(function(todos) {
+    //     todos = filterTodos(todos);
+    //     var listItem;
+    //     todoListPlaceholder.style.display = "none";
+    //     todos.forEach(function(todo) {
+    //         listItem = createListItem(todo);
+    //         todoList.appendChild(listItem);
+    //     });
+    //     addDeleteAllButton(todos.length);
+    //     updateLabel(todos.length);
+    // });
 }
 function filterTodos(todos) {
     if (activatedTab === 0) {
@@ -268,44 +271,44 @@ function doneTodo(todo, callback) {
         });
 }
 
-function createListItem(todo) {
-    var listItem = document.createElement("li");
-    listItem.id = "li" + todo.id;
-    var numbering = document.createElement("span");
-    numbering.className = "numbering";
-    numbering.innerHTML = document.getElementsByClassName("numbering").length + 1;
-    var todoText = document.createElement("span");
-    todoText.className = "todoTextBody";
-    todoText.textContent = todo.title;
+// function createListItem(todo) {
+//     var listItem = document.createElement("li");
+//     listItem.id = "li" + todo.id;
+//     var numbering = document.createElement("span");
+//     numbering.className = "numbering";
+//     numbering.innerHTML = document.getElementsByClassName("numbering").length + 1;
+//     var todoText = document.createElement("span");
+//     todoText.className = "todoTextBody";
+//     todoText.textContent = todo.title;
+//
+//     var updateButton = createItemButton(todo, specChar.pen, "update", updateListItem);
+//     var deleteButton = createItemButton(todo, "X", "del", deleteTodo);
+//
+//     var buttonSpan = document.createElement("span");
+//     buttonSpan.className = "buttonSpan";
+//     listItem.appendChild(numbering);
+//     listItem.appendChild(todoText);
+//     buttonSpan.appendChild(deleteButton);
+//     if (!todo.isComplete) {
+//         var completeButton = createItemButton(todo, specChar.tick, "comp", doneTodo);
+//         buttonSpan.appendChild(completeButton);
+//     }
+//
+//     buttonSpan.appendChild(updateButton);
+//     listItem.appendChild(buttonSpan);
+//
+//     return listItem;
+// }
 
-    var updateButton = createItemButton(todo, specChar.pen, "update", updateListItem);
-    var deleteButton = createItemButton(todo, "X", "del", deleteTodo);
-
-    var buttonSpan = document.createElement("span");
-    buttonSpan.className = "buttonSpan";
-    listItem.appendChild(numbering);
-    listItem.appendChild(todoText);
-    buttonSpan.appendChild(deleteButton);
-    if (!todo.isComplete) {
-        var completeButton = createItemButton(todo, specChar.tick, "comp", doneTodo);
-        buttonSpan.appendChild(completeButton);
-    }
-
-    buttonSpan.appendChild(updateButton);
-    listItem.appendChild(buttonSpan);
-
-    return listItem;
-}
-
-function createItemButton(todo, char, butId, action) {
-    var button = document.createElement("button");
-    button.id = butId + todo.id;
-    button.innerHTML = char;
-    button.onclick = function() {
-        action(todo, reloadTodoList);
-    };
-    return button;
-}
+// function createItemButton(todo, char, butId, action) {
+//     var button = document.createElement("button");
+//     button.id = butId + todo.id;
+//     button.innerHTML = char;
+//     button.onclick = function() {
+//         action(todo, reloadTodoList);
+//     };
+//     return button;
+// }
 
 function updateLabel(listLength) {
     var label = document.getElementById("count-label");

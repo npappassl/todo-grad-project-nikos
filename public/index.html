@@ -21,12 +21,19 @@
         <section>
             <h2 id="todo-list-placeholder">Loading...</h2>
             <ul id="todo-list"></ul>
+            <div ng-app="todoApp">
+                <div class="hero-unit" ng-view></div>
+            </div>
             <form id="todo-form">
                 <input id="new-todo" placeholder="What needs to be done?" autofocus>
                 <input id="submit-todo" type="submit" value="post">
             </form>
             <div id="error"></div>
         </section>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-resource.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-route.min.js"></script>
+        <script type="text/javascript" src="ang_app.js"></script>
         <script type="text/javascript" src="main.js"></script>
     </body>
 </html>
