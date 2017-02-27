@@ -1,0 +1,11 @@
+<ul>
+    <li ng-repeat="todo in list.todos">
+        <span class="numbering">{{$index +1}}</span>
+        <span class="todoTextBody">{{todo.title}}</span>
+        <span class="buttonSpan">
+            <button id="del{{todo.id}}">x</button>
+            <button id="copml{{todo.id}}">✓</button>
+            <button id="update{{todo.id}}">✒</button>
+        </span>
+    </li>
+</ul>
