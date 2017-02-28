@@ -4,25 +4,23 @@
   <span class="{{list.nav.all}}" ng-click="list.getAll()">All</span>
   <span id="undoSpan"><span id="closePopup" onclick="hideUndoSpan()">X</span>You just deleted some items... <a onclick="undoDelete()">Undo</a></span>
 </nav>
-<p>You have {{list.todos.length}} TODOs</p>
+<p id="count-label">You have {{list.todos.length}} TODOs</p>
 <form novalidate id="todo-form">
     <input ng-model="list.newTodoField" id="new-todo" placeholder="What needs to be done?" autofocus>
     <input ng-click="list.addTodo()" id="submit-todo" type="submit" value="post">
 
 </form>
-<p>{{list.newTodoField}}</p>
 <ul>
-    <li ng-repeat="todo in list.todos" ng-class="{editing: todo == list.editedTodo}">
+    <li ng-repeat="todo in list.todos | filter:{ isComplete: list.filterState } track by $index" ng-class="{editing: todo == list.editedTodo}">
         <span class="numbering">{{$index +1}}</span>
-        <label class="todoTextBody" ng-dbclick="list.updateTodo(todo)">{{todo.title}}</label>
+        <label class="todoTextBody" ng-dblclick="list.updateTodo(todo)">{{todo.title}}</label>
         <span class="buttonSpan">
-            <button ng-click="list.deleteTodo($event)" id="del{{todo.id}}">x</button>
-            <button ng-click="list.doneTodo($event)" id="copml{{todo.id}}">✓</button>
-            <button id="update{{todo.id}}">✒</button>
+            <button ng-click="list.deleteTodo(todo)">x</button>
+            <button ng-click="list.doneTodo(todo)">✓</button>
+            <button ng-click="list.update(todo)">✒</button>
         </span>
         <form ng-submit="list.saveEdits(todo, 'submit')">
-            <input class="edit" ng-trim="false" ng-model="todo.title" todo-escape="list.revertEdits(todo)" ng-blur="saveEdits(todo, 'blur')" todo-focus="todo == editedTodo">
+            <input class="edit" ng-trim="false" ng-model="todo.title" ng-blur="list.updateDB(todo)" todo-focus="todo == list.editedTodo">
         </form>
-
     </li>
 </ul>

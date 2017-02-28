@@ -31,7 +31,6 @@ module.exports = function(port, middleware, callback) {
 
     // Read
     app.get("/api/todo/:id", function(req, res) {
-        console.log("todo get id " + req.params.id);
         if (req.params.id === "state") {
             res.json(stateChangeId);
         }
@@ -40,8 +39,6 @@ module.exports = function(port, middleware, callback) {
         }
     });
     app.get("/api/todo", function(req, res) {
-        console.log("todo get");
-        console.log(todos);
         res.send(todos);
         // res.json({
         //     todos: todos,
