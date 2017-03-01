@@ -62,12 +62,12 @@ app_ang.controller("TodoListCtrl", function(Todo) {
         this.nav.all = "active";
     };
     // editing todo
-    this.updateTodo = function ($event,todo) {
+    this.updateTodo = function ($event, todo) {
         this.editedTodo = todo;
         this.originalTodo = angular.extend({}, todo);
-        setTimeout(function(){
-            $event.target.parentNode.getElementsByClassName('edit')[0].focus();
-        },0);
+        setTimeout(function() {
+            $event.target.parentNode.getElementsByClassName("edit")[0].focus();
+        }, 200);
     };
     this.updateDB = function (todo) {
         Todo.update({id: todo.id}, {title: todo.title});
