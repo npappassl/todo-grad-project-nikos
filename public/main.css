@@ -1,3 +1,12 @@
+.fade.ng-enter{
+    -webkit-transition: all .3s ease ; /* Chrome */
+    transition: all .3s ease;
+    opacity: 0;
+}
+.fade.ng-enter.ng-enter-active{
+    opacity: 1;
+}
+
 *{
   margin:0;
   padding:0;
@@ -9,12 +18,12 @@ section{
 body {
     width: 100%;
     background: #ebedef;
-    color: #4A0E50;
+    color: #65286b;
     font-family: sans-serif;
     margin: 0;
 }
 header {
-    background-color: #4A0E50;
+    background-color: #65286b;
     padding: 0.5em 1em;
     box-shadow: 0 0 2px 3px lightgrey;
 }
@@ -29,15 +38,19 @@ nav{
   height: 3.5em;
   border-top: 1px solid white;
   text-align: center;
-  background-color: rgb(80,31,52);
+  background-color: rgb(128, 191, 153);
+  box-shadow: 2px 2px 3px 2px lightgrey;
 }
+
 nav span{
   margin-top: 1em;
+  margin-left: 4px;
+  margin-right: 4px;
   height: 2em;
-  background-color: rgba(80,31,52,0.7);
+  background-color: rgb(128, 191, 153);
   display:inline-block;
   padding-top: 0.5em;
-  width: 30%;
+  width: 28%;
   color:white;
   text-align: center;
   transition: all 0.5s ease;
@@ -47,7 +60,6 @@ nav span:hover{
   color: black;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-
 }
 nav span.active:hover{
   color: #4A0E50;
@@ -57,8 +69,9 @@ nav span.active:hover{
   background-color: #ebedef;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  color: #4A0E50;
+  color: #65286b;
   font-weight: 900;
+  box-shadow: 0px 0px 0px 6px rgb(235, 237, 239);
 }
 #undoSpan{
     height: 5em;
@@ -101,8 +114,17 @@ ul{
     list-style: none;
 }
 li{
+    background-color: hsla(144, 33%, 63%, .21);
     margin: 1em auto;
     display: block;
+    padding-top: 2em;
+    min-width: 100%;
+    min-width: 3em;
+    border-radius: 0.3em;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-bottom: 2em;
+    box-shadow: .5px .5px 3px 1px rgb(101, 40, 107);
 }
 .numbering{
     font-size: 3em;
@@ -115,13 +137,13 @@ li{
     border-radius: 1px;
     border-style: inset;
     border-width: 1px;
-    background-color: #FDFAFC;
+    background-color: #bee8cf;
     display: inline-block;
     font-size: 1.2em;
-    width: 75%;
+    width: 71%;
     height: 1em;
     overflow: auto;
-    padding-bottom: 10%;
+    padding-bottom: 8%;
 }
 li .edit{
     visibility: hidden;
@@ -140,16 +162,15 @@ li.editing .edit{
     background-color: #FDFAFC;
     display: inline-block;
     font-size: 1.2em;
-    width: 75%;
+    width: 71%;
     height: 1em;
     overflow: auto;
-    padding-bottom: 10%;
+    padding-bottom: 8%;
 }
-
 .buttonSpan{
   float: right;
   display: block;
-  margin: 2em auto;
+  margin: 2em 2em;
 }
 .updateSpan{
   margin: 1em auto;
@@ -173,15 +194,15 @@ h1 {
     display: block;
     font-size: 34px;
     line-height: 34px;
-    color: rgba(255, 255, 255, 0.87);
+    color: rgb(235, 237, 239);
 }
 button,#submit-todo,.confirmUpdate{
     cursor: pointer;
     padding: 0 0 0 0;
-    margin: 0 0 0 0;
-    border-color: #4A0E54;
-    background-color: #5a1e34;
-    color: white;
+    margin: 0 4px 0 0;
+    border-color: #80bf99;
+    background-color: #80bf99;
+    color: #641f6b;
     min-width: 2em;
     min-height: 1.5em;
     height: 2em;
@@ -197,8 +218,8 @@ button,#submit-todo,.confirmUpdate{
   font-size:14px;
   margin-left: 1em;
   height: 25px;
-  color: white;
-  padding: 0;
+  color: #65286b;
+  padding: 2px 4px 2px;
 }
 #new-todo{
   width: 250px;

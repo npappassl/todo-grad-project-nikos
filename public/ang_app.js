@@ -1,4 +1,4 @@
-var app_ang = angular.module("todoApp", ["ngResource", "ngRoute"]);
+var app_ang = angular.module("todoApp", ["ngResource", "ngRoute", "ngAnimate"]);
 app_ang.config(function($routeProvider) {
     $routeProvider.when("/", {
         controller: "TodoListCtrl as list",
@@ -68,6 +68,10 @@ app_ang.controller("TodoListCtrl", function(Todo) {
     };
     this.updateDB = function (todo) {
         Todo.update({id: todo.id}, {title: todo.title});
+        this.todos = Todo.query();
+    };
+    this.deleteComplete = function() {
+        Todo.delete({id: "complete"});
         this.todos = Todo.query();
     };
 
