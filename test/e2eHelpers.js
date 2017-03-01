@@ -23,9 +23,9 @@ module.exports.setupDriver = function() {
 module.exports.setupServer = function(done) {
     router = express.Router();
     if (gatheringCoverage) {
-        router.get("/main.js", function(req, res) {
-            var absPath = path.join(__dirname, "..", "public", "main.js");
-            res.send(instrumenter.instrumentSync(fs.readFileSync("public/main.js", "utf8"), absPath));
+        router.get("/ang_app.js", function(req, res) {
+            var absPath = path.join(__dirname, "..", "public", "ang_app.js");
+            res.send(instrumenter.instrumentSync(fs.readFileSync("public/ang_app.js", "utf8"), absPath));
         });
     }
     server = createServer(testPort, router, done);
@@ -81,8 +81,9 @@ module.exports.addTodo = function(text) {
     driver.findElement(webdriver.By.id("submit-todo")).click();
 };
 module.exports.deleteTodo = function(index) {
+    var todoListPlaceholder = driver.findElement(webdriver.By.id("todo-list-placeholder"));
+    driver.wait(webdriver.until.elementIsNotVisible(todoListPlaceholder), 5000);
     var delBut = driver.findElement(webdriver.By.id("del" + index));
-    driver.wait(webdriver.until.elementIsVisible(delBut), 5000);
     delBut.click();
 };
 module.exports.setupErrorRoute = function(action, route) {
