@@ -12,15 +12,15 @@
 </form>
 <ul>
     <li class="fade" ng-repeat="todo in filtered = (list.todos | filter:{ isComplete: list.filterState }) track by $index" ng-class="{editing: todo == list.editedTodo}" >
+        <span class="numbering">{{$index +1}}</span>
+        <label class="todoTextBody" ng-dblclick="list.updateTodo($event,todo)">{{todo.title}}</label>
         <span class="buttonSpan">
             <button ng-click="list.deleteTodo(todo)">x</button>
             <button ng-click="list.doneTodo(todo)">✓</button>
-            <button ng-click="list.update(todo)">✒</button>
         </span>
-        <span class="numbering">{{$index +1}}</span>
-        <label class="todoTextBody" ng-dblclick="list.updateTodo(todo)">{{todo.title}}</label>
-        <form ng-submit="list.saveEdits(todo, 'submit')">
-            <input class="edit" ng-trim="false" ng-model="todo.title" ng-blur="list.updateDB(todo)" todo-focus="todo == list.editedTodo">
+        <form id="edit-form" ng-submit="list.updateDB(todo)">
+            <input class="edit" ng-trim="false" ng-model="todo.title" ng-blur="list.updateDB(todo)" todo-focus="todo == list.editedTodo" autofocus>
+            <input class="confirmUpdate" type="submit" value="✒">
         </form>
     </li>
 </ul>

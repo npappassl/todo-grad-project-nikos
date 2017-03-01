@@ -146,7 +146,7 @@ li{
     padding-bottom: 8%;
 }
 li .edit{
-    visibility: hidden;
+    visibility: collapse;
 }
 li.editing .todoTextBody{
     display: none;
@@ -167,23 +167,11 @@ li.editing .edit{
     overflow: auto;
     padding-bottom: 8%;
 }
+.editing .buttonSpan{
+    display: none;
+}
 .buttonSpan{
-  float: right;
-  display: block;
-  margin: 2em 2em;
-}
-.updateSpan{
-  margin: 1em auto;
-  height: 2em;
-  display: block;
-}
-.updateTxt{
-  font-size: 1.1em;
-  outline-color: #4A0E54;
-  float: right;
-  margin-right: 2em;
-  height: 1.5em;
-
+    display: block;
 }
 #todo-form{
     display: block;
@@ -211,6 +199,7 @@ button,#submit-todo,.confirmUpdate{
     float:right;
     transition: all .6s ease;
     border-radius: 2px;
+    font-weight: 900;
 }
 #submit-todo{
   float: none;
@@ -235,4 +224,10 @@ button,#submit-todo,.confirmUpdate{
 }
 button:hover , #submit-todo:hover{
   filter:brightness(.7);
+}
+.confirmUpdate{
+    visibility: hidden;
+}
+.editing .confirmUpdate{
+    visibility: visible;
 }
