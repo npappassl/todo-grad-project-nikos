@@ -45,9 +45,9 @@ module.exports = function(port, middleware, callback) {
         //     state: stateChangeId
         // });
     });
-    app.get("/api/todo/state", function(req, res) {
-        res.json(stateChangeId);
-    });
+    // app.get("/api/todo/state", function(req, res) {
+    //     res.json(stateChangeId);
+    // });
 
     // Delete
     app.delete("/api/todo/:id", function(req, res) {

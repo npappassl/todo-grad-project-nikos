@@ -59,12 +59,14 @@ module.exports.getTitleText = function() {
 };
 
 module.exports.getInputText = function() {
-    return driver.findElement(webdriver.By.id("new-todo")).getAttribute("value");
+    var newTodo = driver.findElement(webdriver.By.id("new-todo"));
+    driver.wait(webdriver.until.elementIsVisible(newTodo), 5000);
+    return newTodo.getAttribute("value");
 };
 
 module.exports.getErrorText = function() {
     var errorElement = driver.findElement(webdriver.By.id("error"));
-    driver.wait(webdriver.until.elementTextContains(errorElement, "Failed"), 15000);
+    driver.wait(webdriver.until.elementTextContains(errorElement, "Failed"), 5000);
     return errorElement.getText();
 };
 
@@ -78,12 +80,12 @@ module.exports.addTodo = function(text) {
     driver.findElement(webdriver.By.id("new-todo")).sendKeys(text);
     driver.findElement(webdriver.By.id("submit-todo")).click();
 };
-module.exports.deleteTodo = function(id) {
-    driver.wait(function() {
-        return driver.isElementPresent(webdriver.By.id("del" + id));
-    }, 5000);
-    var deleteButton = driver.findElement(webdriver.By.id("del" + id));
-    deleteButton.click();
+module.exports.deleteTodo = function(index) {
+    var delBut = driver.findElements(webdriver.By.id("del" + index));
+    driver.wait(webdriver.until.elementIsPresent(delBut), 5000, function() {
+        delBut.click();
+    });
+    console.error(delBut);
 };
 module.exports.setupErrorRoute = function(action, route) {
     if (action === "get") {

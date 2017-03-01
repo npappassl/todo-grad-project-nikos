@@ -12,70 +12,96 @@ app_ang.factory("Todo", function($resource) {
     return TodoObject;
 });
 app_ang.controller("TodoListCtrl", function(Todo) {
-    this.todos = Todo.query();
-    this.filterState = false;
-    this.nav = {
+    var self = this;
+    self.placeholderClassName = "";
+    self.filterState = false;
+    self.nav = {
         onGoing: "active",
         complete: "",
         all: ""
     };
-    this.editedTodo = null;
-    this.newTodoField = "";
-    this.addTodo = function () {
+    self.error = "";
+    self.editedTodo = null;
+    self.newTodoField = "";
+    self.addTodo = function () {
         var newTodo = {
-            title: this.newTodoField.trim(),
+            title: self.newTodoField.trim(),
             isComplete: false
         };
         if (!newTodo.title) {
             return;
         }
-        Todo.save(newTodo);
-        this.newTodoField = "";
-        this.todos = Todo.query();
+        Todo.save(newTodo).$promise.then(function(data) {
+            console.log(data);
+            self.newTodoField = "";
+            self.refresh();
+        }).catch(function(error) {
+            self.handleError(error, "create item");
+        });
     };
-    this.deleteTodo = function(todo) {
-        Todo.delete({id: todo.id});
-        this.cachedTodos = Todo.query();
-        this.todos = Todo.query();
+    self.deleteTodo = function(todo) {
+        Todo.delete({id: todo.id}).$promise
+            .then(function(data) {
+                self.refresh();
+            }).catch(function(err) {
+                self.error = "Failed to delete item(s). Server returned " + err.status + " - " + err.statusText;
+            });
     };
-    this.doneTodo = function(todo) {
+    self.doneTodo = function(todo) {
         Todo.update({id: todo.id}, {isComplete: true});
-        this.cachedTodos = Todo.query();
-        this.todos = Todo.query();
+        self.refresh();
     };
-    this.getComplete = function() {
-        this.filterState = true;
-        this.nav.complete = "active";
-        this.nav.onGoing = "";
-        this.nav.all = "";
+    self.getComplete = function() {
+        self.filterState = true;
+        self.nav.complete = "active";
+        self.nav.onGoing = "";
+        self.nav.all = "";
     };
-    this.getOngoing = function() {
-        this.filterState = false;
-        this.nav.complete = "";
-        this.nav.onGoing = "active";
-        this.nav.all = "";
+    self.getOngoing = function() {
+        self.filterState = false;
+        self.nav.complete = "";
+        self.nav.onGoing = "active";
+        self.nav.all = "";
     };
-    this.getAll = function() {
-        this.filterState = "";
-        this.nav.complete = "";
-        this.nav.onGoing = "";
-        this.nav.all = "active";
+    self.getAll = function() {
+        self.filterState = "";
+        self.nav.complete = "";
+        self.nav.onGoing = "";
+        self.nav.all = "active";
     };
     // editing todo
-    this.updateTodo = function ($event, todo) {
-        this.editedTodo = todo;
-        this.originalTodo = angular.extend({}, todo);
+    self.updateTodo = function ($event, todo) {
+        self.editedTodo = todo;
+        self.originalTodo = angular.extend({}, todo);
         setTimeout(function() {
             $event.target.parentNode.getElementsByClassName("edit")[0].focus();
         }, 200);
     };
-    this.updateDB = function (todo) {
+    self.updateDB = function (todo) {
         Todo.update({id: todo.id}, {title: todo.title});
-        this.todos = Todo.query();
+        self.refresh();
     };
-    this.deleteComplete = function() {
-        Todo.delete({id: "complete"});
-        this.todos = Todo.query();
+    self.deleteComplete = function() {
+        Todo.delete({id: "complete"}).$promise
+            .then(function(data) {
+                self.refresh();
+            }).catch(function(err) {
+                self.error = err;
+            });
     };
-
+    self.handleError = function(error, failedAction) {
+        if (error) {
+            self.error = "Failed to " + failedAction + ". Server returned " + error.status + " - " + error.statusText;
+        }
+    };
+    self.refresh = function() {
+        Todo.query(function(data) {
+            self.todos = data;
+        }).$promise.then(function(data) {
+            self.placeholderClassName = "hidden";
+        }).catch(function(error) {
+            self.handleError(error, "get list");
+        });
+    };
+    self.refresh();
 });

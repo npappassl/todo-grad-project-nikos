@@ -21,8 +21,8 @@ testing.describe("end to end", function() {
         });
         testing.it("displays empty TODO list", function() {
             helpers.navigateToSite();
-            helpers.getTodoList().then(function(elements) {
-                assert.equal(elements.length, 0);
+            helpers.getTodoList().then(function(element) {
+                assert.equal(element.length, 0);
             });
         });
         testing.it("displays an error if the request fails", function() {

@@ -140,7 +140,7 @@ li{
     background-color: #bee8cf;
     display: inline-block;
     font-size: 1.2em;
-    width: 71%;
+    width: 80%;
     height: 1em;
     overflow: auto;
     padding-bottom: 8%;
@@ -148,6 +148,7 @@ li{
 li .edit{
     visibility: hidden;
     transition: all .3s ease;
+    outline-color: #bee8cf;
 }
 li.editing .todoTextBody{
     display: none;
@@ -163,10 +164,11 @@ li.editing .edit{
     background-color: #FDFAFC;
     display: inline-block;
     font-size: 1.2em;
-    width: 71%;
+    width: 80%;
     height: 1em;
     overflow: auto;
     padding-bottom: 8%;
+    outline-color: #4A0E54;
 }
 .editing .buttonSpan{
     display: none;
@@ -231,4 +233,16 @@ button:hover , #submit-todo:hover{
 }
 .editing .confirmUpdate{
     visibility: visible;
+}
+.hidden{
+    display: none;
+}
+.complete::after{
+        font-size: 40px;
+        content: "✓";
+}
+.complete .buttonSpan .complButton{
+    pointer-events: none;
+    cursor: default;
+    filter: brightness(.5);
 }
