@@ -11,7 +11,7 @@
     <input id="submit-todo" type="submit" value="post">
 
 </form>
-<button ng-click="list.deleteComplete()" ng-if="(list.filterState==true) && filtered.length>0" id="deleteComplete">Delete Complete</button>
+<button ng-if="(list.filterState==true) && filtered.length>0" ng-click="list.deleteComplete()" id="deleteComplete">Delete Completed</button>
 <ul id="todo-list">
     <li class="fade" ng-repeat="todo in filtered = (list.todos | filter:{ isComplete: list.filterState }) track by $index" ng-class="{complete: todo.isComplete, editing: todo == list.editedTodo}" >
         <span class="numbering">{{$index +1}}</span>

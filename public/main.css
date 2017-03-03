@@ -38,7 +38,7 @@ nav{
   height: 3.5em;
   border-top: 1px solid white;
   text-align: center;
-  background-color: rgb(128, 191, 153);
+  background-color: #78a98b;
   box-shadow: 2px 2px 3px 2px lightgrey;
 }
 
@@ -47,7 +47,7 @@ nav span{
   margin-left: 4px;
   margin-right: 4px;
   height: 2em;
-  background-color: rgb(128, 191, 153);
+  background-color: #78a98b;
   display:inline-block;
   padding-top: 0.5em;
   width: 28%;
