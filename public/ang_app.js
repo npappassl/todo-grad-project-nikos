@@ -11,7 +11,7 @@ app_ang.factory("Todo", function($resource) {
     });
     return TodoObject;
 });
-app_ang.controller("TodoListCtrl", function(Todo) {
+app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) {
     var self = this;
     self.placeholderClassName = "";
     self.filterState = false;
@@ -20,6 +20,7 @@ app_ang.controller("TodoListCtrl", function(Todo) {
         complete: "",
         all: ""
     };
+    self.state = 0;
     self.error = "";
     self.editedTodo = null;
     self.newTodoField = "";
@@ -104,4 +105,13 @@ app_ang.controller("TodoListCtrl", function(Todo) {
         });
     };
     self.refresh();
-});
+    (function tick() {
+        Todo.get({id: "state"}, function(data) {
+            if (data.state > self.state) {
+                self.state = data.state;
+                self.refresh();
+            }
+        });
+        timeout(tick, 1000);
+    })();
+}]);
