@@ -1,8 +1,10 @@
 <nav>
-  <span class="{{list.nav.complete}}" ng-click="list.getComplete()">Complete</span>
-  <span class="{{list.nav.onGoing}}" ng-click="list.getOngoing()">OnGoing</span>
-  <span class="{{list.nav.all}}" ng-click="list.getAll()">All</span>
-  <span id="undoSpan"><span id="closePopup" onclick="hideUndoSpan()">X</span>You just deleted some items... <a onclick="undoDelete()">Undo</a></span>
+  <span class="{{list.nav.complete}}" ng-click="list.getTab(&quot;complete&quot;)">Complete</span>
+  <span class="{{list.nav.onGoing}}" ng-click="list.getTab(&quot;onGoing&quot;)">OnGoing</span>
+  <span class="{{list.nav.all}}" ng-click="list.getTab(&quot;all&quot;)">All</span>
+  <span ng-if="list.justDeleted == true" id="undoSpan">
+      <span id="closePopup" ng-click="list.hideUndoSpan()">X</span>You just deleted some items... <a ng-click="list.undoDelete()">Undo</a>
+  </span>
 </nav>
 <h2 id="todo-list-placeholder" class="{{list.placeholderClassName}}">Loading...</h2>
 <p id="count-label">You have {{filtered.length}} TODOs</p>
@@ -11,7 +13,7 @@
     <input id="submit-todo" type="submit" value="post">
 
 </form>
-<button ng-if="(list.filterState==true) && filtered.length>0" ng-click="list.deleteComplete()" id="deleteComplete">Delete Completed</button>
+<button ng-if="list.filterState==true && filtered.length>0" ng-click="list.deleteComplete()" id="deleteComplete">Delete Completed</button>
 <ul id="todo-list">
     <li class="fade" ng-repeat="todo in filtered = (list.todos | filter:{ isComplete: list.filterState }) track by $index" ng-class="{complete: todo.isComplete, editing: todo == list.editedTodo}" >
         <span class="numbering">{{$index +1}}</span>
