@@ -1,32 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-framework="angularjs">
     <head>
         <meta charset="utf-8">
         <title>TODO List</title>
         <link href="main.css" rel="stylesheet" type="text/css">
         <link rel="icon" type="image/ico" href="icon.ico">
         <link href="https://fonts.googleapis.com/css?family=Raleway:200,400,700,900" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular-resource.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular-route.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular-animate.js"></script>
     </head>
     <body>
         <header>
             <h1>TODO List</h1>
         </header>
-        <nav>
-          <span onclick="activateTab(0)">Complete</span>
-          <span class="active" onclick="activateTab(1)">OnGoing</span>
-          <span onclick="activateTab(2)">All</span>
-          <span id="undoSpan"><span id="closePopup" onclick="hideUndoSpan()">X</span>You just deleted some items... <a onclick="undoDelete()">Undo</a></span>
-        </nav>
-        <div id="count-label"></div>
         <section>
-            <h2 id="todo-list-placeholder">Loading...</h2>
-            <ul id="todo-list"></ul>
-            <form id="todo-form">
-                <input id="new-todo" placeholder="What needs to be done?" autofocus>
-                <input id="submit-todo" type="submit" value="post">
-            </form>
-            <div id="error"></div>
+            <div ng-app="todoApp">
+                <div ng-view></div>
+            </div>
         </section>
-        <script type="text/javascript" src="main.js"></script>
+        <script type="text/javascript" src="ang_app.js"></script>
+        <!-- <script type="text/javascript" src="main.js"></script> -->
     </body>
 </html>
