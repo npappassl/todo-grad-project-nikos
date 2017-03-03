@@ -2,7 +2,7 @@
   <span id="nav-complete" class="{{list.nav.complete}}" ng-click="list.getTab(&quot;complete&quot;)">Complete</span>
   <span id="nav-onGoing" class="{{list.nav.onGoing}}" ng-click="list.getTab(&quot;onGoing&quot;)">OnGoing</span>
   <span id="nav-all" class="{{list.nav.all}}" ng-click="list.getTab(&quot;all&quot;)">All</span>
-  <span ng-if="list.justDeleted == true" id="undoSpan">
+  <span class="no-animate" ng-if="list.justDeleted == true" id="undoSpan">
       <span id="closePopup" ng-click="list.hideUndoSpan()">X</span>You just deleted some items... <a ng-click="list.undoDelete()">Undo</a>
   </span>
 </nav>
@@ -13,7 +13,7 @@
     <input id="submit-todo" type="submit" value="post">
 
 </form>
-<button ng-if="list.filterState==true && filtered.length>0" ng-click="list.deleteComplete()" id="deleteComplete">Delete Completed</button>
+<button class="no-animate" ng-if="list.filterState==true && filtered.length>0" ng-click="list.deleteComplete()" id="deleteComplete">Delete Completed</button>
 <ul id="todo-list">
     <li class="fade" ng-repeat="todo in filtered = (list.todos | filter:{ isComplete: list.filterState }) track by $index" ng-class="{complete: todo.isComplete, editing: todo == list.editedTodo}" >
         <span class="numbering">{{$index +1}}</span>

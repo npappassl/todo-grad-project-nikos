@@ -246,3 +246,7 @@ button:hover , #submit-todo:hover{
     cursor: default;
     filter: brightness(.5);
 }
+.no-animate {
+   -webkit-transition: none !important;
+   transition: none !important;
+}
