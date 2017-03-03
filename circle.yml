@@ -5,4 +5,4 @@ deployment:
   prod:
     branch: master
     heroku:
-      appname: angjs-todo
+      appname: todo-grad-project-nikos
