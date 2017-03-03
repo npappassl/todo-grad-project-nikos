@@ -30,14 +30,6 @@ module.exports = function(port, middleware, callback) {
     });
 
     // Read
-    // app.get("/api/todo/:id", function(req, res) {
-    //     if (req.params.id === "state") {
-    //         res.json(stateChangeId);
-    //     }
-    //     else {
-    //         res.send(getTodo(req.params.id));
-    //     }
-    // });
     app.get("/api/todo", function(req, res) {
         res.send(todos);
         // res.json({
@@ -45,8 +37,16 @@ module.exports = function(port, middleware, callback) {
         //     state: stateChangeId
         // });
     });
-    // app.get("/api/todo/state", function(req, res) {
-    //     res.json(stateChangeId);
+    app.get("/api/todo/state", function(req, res) {
+        res.json({state: stateChangeId});
+    });
+    // app.get("/api/todo/:id", function(req, res) {
+    //     if (req.params.id === "state") {
+    //         res.json(stateChangeId);
+    //     }
+    //     else {
+    //         res.send(getTodo(req.params.id));
+    //     }
     // });
 
     // Delete
