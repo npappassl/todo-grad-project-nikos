@@ -107,7 +107,7 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
     self.refresh();
     (function tick() {
         Todo.get({id: "state"}, function(data) {
-            if (data.state > self.state) {
+            if (data.state !== self.state) {
                 self.state = data.state;
                 self.refresh();
             }
