@@ -6,11 +6,12 @@
 </nav>
 <h2 id="todo-list-placeholder" class="{{list.placeholderClassName}}">Loading...</h2>
 <p id="count-label">You have {{filtered.length}} TODOs</p>
-<form novalidate id="todo-form">
+<form ng-submit="list.addTodo()" novalidate id="todo-form">
     <input ng-model="list.newTodoField" id="new-todo" placeholder="What needs to be done?" autofocus>
-    <input ng-click="list.addTodo()" id="submit-todo" type="submit" value="post">
+    <input id="submit-todo" type="submit" value="post">
 
 </form>
+<button ng-click="list.deleteComplete()" ng-if="(list.filterState==true) && filtered.length>0" id="deleteComplete">Delete Complete</button>
 <ul id="todo-list">
     <li class="fade" ng-repeat="todo in filtered = (list.todos | filter:{ isComplete: list.filterState }) track by $index" ng-class="{complete: todo.isComplete, editing: todo == list.editedTodo}" >
         <span class="numbering">{{$index +1}}</span>
@@ -25,5 +26,4 @@
         </form>
     </li>
 </ul>
-<button ng-click="list.deleteComplete()" ng-if="list.filterState==true && filtered.length>0" id="deleteComplete">Delete Complete</button>
 <div id="error">{{list.error}}</div>
