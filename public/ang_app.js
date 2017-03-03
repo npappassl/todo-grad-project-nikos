@@ -48,8 +48,8 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
     self.deleteTodo = function(todo) {
         Todo.delete({id: todo.id}).$promise
             .then(function(data) {
-                self.refresh();
                 self.justDeleted = true;
+                self.refresh();
             }).catch(function(err) {
                 self.error = "Failed to delete item(s). Server returned " + err.status + " - " + err.statusText;
             });
