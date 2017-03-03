@@ -1,6 +1,6 @@
 {
   "name": "todo-grad-project-nikos",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "This is the first instance of Angular.js TODO list",
   "main": "server.js",
   "directories": {
