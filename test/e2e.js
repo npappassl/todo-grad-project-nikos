@@ -83,5 +83,66 @@ testing.describe("end to end", function() {
                 assert.equal(text, "Failed to delete item(s). Server returned 404 - Not Found");
             });
         });
+        testing.it("get undo span when deleting single", function() {
+            helpers.navigateToSite();
+            helpers.addTodo("NEw todo");
+            helpers.deleteTodo(0);
+            helpers.isUndoSpanVisible();
+        });
+        testing.it("get undo span when deleting all completed", function() {
+            helpers.navigateToSite();
+            helpers.addTodo("NEw todo");
+            helpers.addTodo("NEw todo2");
+            helpers.completeTodo(1);
+            helpers.completeTodo(0);
+            helpers.navigateToTab("complete");
+            helpers.deleteCompletedTodos();
+            helpers.isUndoSpanVisible();
+        });
+    });
+    testing.describe("on changing tabs", function() {
+        testing.it("going to complete tab deleteComplete not showing", function() {
+            helpers.navigateToSite();
+            helpers.addTodo("incomplete");
+            helpers.navigateToTab("complete");
+            helpers.getLabelText().then(function(text) {
+                assert.equal(text, "You have 0 TODOs");
+            });
+            helpers.isDeleteCompleteVisible();
+        });
+        testing.it("going to complete tab filters to complete", function() {
+            helpers.navigateToSite();
+            helpers.addTodo("complete");
+            helpers.addTodo("incomplete1");
+            helpers.addTodo("incomplete2");
+            helpers.completeTodo(0);
+            helpers.navigateToTab("complete");
+            helpers.getLabelText().then(function(text) {
+                assert.equal(text, "You have 1 TODOs");
+            });
+            helpers.getTodoListLabels().then(function(elements) {
+                elements[0].getText().then(function(text) {
+                    assert.equal(text, "complete");
+                });
+            });
+        });
+        testing.it("an all shows all", function() {
+            helpers.navigateToSite();
+            helpers.addTodo("complete");
+            helpers.addTodo("incomplete1");
+            helpers.addTodo("incomplete2");
+            helpers.completeTodo(0);
+            helpers.getLabelText().then(function(text) {
+                assert.equal(text, "You have 2 TODOs");
+            });
+            helpers.navigateToTab("all");
+            helpers.getLabelText().then(function(text) {
+                assert.equal(text, "You have 3 TODOs");
+            });
+            helpers.navigateToTab("complete");
+            helpers.getLabelText().then(function(text) {
+                assert.equal(text, "You have 1 TODOs");
+            });
+        });
     });
 });

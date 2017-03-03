@@ -1,10 +1,12 @@
 var app_ang = angular.module("todoApp", ["ngResource", "ngRoute", "ngAnimate"]);
+
 app_ang.config(function($routeProvider) {
     $routeProvider.when("/", {
         controller: "TodoListCtrl as list",
         templateUrl: "TodoList.html"
     });
 });
+// Creates the $resource connection to the server
 app_ang.factory("Todo", function($resource) {
     var TodoObject = $resource("/api/todo/:id", {id: "@id"}, {
         "update": {method: "PUT"}
@@ -14,6 +16,7 @@ app_ang.factory("Todo", function($resource) {
 app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) {
     var self = this;
     self.placeholderClassName = "";
+    self.justDeleted = false;
     self.filterState = false;
     self.nav = {
         onGoing: "active",
@@ -24,6 +27,7 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
     self.error = "";
     self.editedTodo = null;
     self.newTodoField = "";
+    // new todo
     self.addTodo = function () {
         var newTodo = {
             title: self.newTodoField.trim(),
@@ -40,37 +44,30 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
             self.handleError(error, "create item");
         });
     };
+    // Delete
     self.deleteTodo = function(todo) {
         Todo.delete({id: todo.id}).$promise
             .then(function(data) {
+                self.justDeleted = true;
                 self.refresh();
             }).catch(function(err) {
                 self.error = "Failed to delete item(s). Server returned " + err.status + " - " + err.statusText;
             });
     };
+    self.deleteComplete = function() {
+        Todo.delete({id: "complete"}).$promise
+            .then(function(data) {
+                self.justDeleted = true;
+                self.refresh();
+            }).catch(function(err) {
+                self.error = err;
+            });
+    };
+    // Update
     self.doneTodo = function(todo) {
         Todo.update({id: todo.id}, {isComplete: true});
         self.refresh();
     };
-    self.getComplete = function() {
-        self.filterState = true;
-        self.nav.complete = "active";
-        self.nav.onGoing = "";
-        self.nav.all = "";
-    };
-    self.getOngoing = function() {
-        self.filterState = false;
-        self.nav.complete = "";
-        self.nav.onGoing = "active";
-        self.nav.all = "";
-    };
-    self.getAll = function() {
-        self.filterState = "";
-        self.nav.complete = "";
-        self.nav.onGoing = "";
-        self.nav.all = "active";
-    };
-    // editing todo
     self.updateTodo = function ($event, todo) {
         self.editedTodo = todo;
         self.originalTodo = angular.extend({}, todo);
@@ -78,22 +75,26 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
             $event.target.parentNode.getElementsByClassName("edit")[0].focus();
         }, 200);
     };
+    // Aux
     self.updateDB = function (todo) {
         Todo.update({id: todo.id}, {title: todo.title});
         self.refresh();
-    };
-    self.deleteComplete = function() {
-        Todo.delete({id: "complete"}).$promise
-            .then(function(data) {
-                self.refresh();
-            }).catch(function(err) {
-                self.error = err;
-            });
     };
     self.handleError = function(error, failedAction) {
         if (error) {
             self.error = "Failed to " + failedAction + ". Server returned " + error.status + " - " + error.statusText;
         }
+    };
+    self.getTab = function(tab) {
+        var choices = {
+            complete: {filterS: true, complete: "active", onGoing: "", all: ""},
+            onGoing: {filterS: false, complete: "", onGoing: "active", all: ""},
+            all: {filterS: "", complete: "", onGoing: "", all: "active"}
+        };
+        self.filterState = choices[tab].filterS;
+        self.nav.complete = choices[tab].complete;
+        self.nav.onGoing = choices[tab].onGoing;
+        self.nav.all = choices[tab].all;
     };
     self.refresh = function() {
         Todo.query(function(data) {
@@ -102,6 +103,15 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
             self.placeholderClassName = "hidden";
         }).catch(function(error) {
             self.handleError(error, "get list");
+        });
+    };
+    self.hideUndoSpan = function() {
+        self.justDeleted = false;
+    };
+    self.undoDelete = function() {
+        Todo.update({id: "undo"}, function() {
+            self.hideUndoSpan();
+            self.refresh();
         });
     };
     self.refresh();

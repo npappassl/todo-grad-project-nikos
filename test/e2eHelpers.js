@@ -54,6 +54,9 @@ module.exports.navigateToSite = function() {
     driver.get(baseUrl);
 };
 
+module.exports.navigateToTab = function(tab) {
+    driver.findElement(webdriver.By.id("nav-" + tab)).click();
+};
 module.exports.getTitleText = function() {
     return driver.findElement(webdriver.By.css("h1")).getText();
 };
@@ -70,10 +73,22 @@ module.exports.getErrorText = function() {
     return errorElement.getText();
 };
 
+module.exports.getLabelText = function() {
+    var labelElement = driver.findElement(webdriver.By.id("count-label"));
+    driver.wait(webdriver.until.elementTextContains(labelElement, "have"), 5000);
+    return labelElement.getText();
+};
+
 module.exports.getTodoList = function() {
     var todoListPlaceholder = driver.findElement(webdriver.By.id("todo-list-placeholder"));
     driver.wait(webdriver.until.elementIsNotVisible(todoListPlaceholder), 5000);
     return driver.findElements(webdriver.By.css("#todo-list li"));
+};
+
+module.exports.getTodoListLabels = function() {
+    var todoListPlaceholder = driver.findElement(webdriver.By.id("todo-list-placeholder"));
+    driver.wait(webdriver.until.elementIsNotVisible(todoListPlaceholder), 5000);
+    return driver.findElements(webdriver.By.css("#todo-list li label"));
 };
 
 module.exports.addTodo = function(text) {
@@ -85,6 +100,25 @@ module.exports.deleteTodo = function(index) {
     driver.wait(webdriver.until.elementIsNotVisible(todoListPlaceholder), 5000);
     var delBut = driver.findElement(webdriver.By.id("del" + index));
     delBut.click();
+};
+module.exports.completeTodo = function(index) {
+    var todoListPlaceholder = driver.findElement(webdriver.By.id("todo-list-placeholder"));
+    driver.wait(webdriver.until.elementIsNotVisible(todoListPlaceholder), 5000);
+    var complBut = driver.findElement(webdriver.By.id("compl" + index));
+    complBut.click();
+};
+module.exports.deleteCompletedTodos = function() {
+    var deleteCompleteBut = driver.findElement(webdriver.By.id("deleteComplete"));
+    driver.wait(webdriver.until.elementIsVisible(deleteCompleteBut), 5000);
+    deleteCompleteBut.click();
+};
+module.exports.isUndoSpanVisible = function() {
+    var undoSpan = driver.findElement(webdriver.By.id("undoSpan"));
+    driver.wait(webdriver.until.elementTextContains(undoSpan, "Undo"), 5000);
+};
+module.exports.isDeleteCompleteVisible = function() {
+    var deleteCompleteBut = driver.findElement(webdriver.By.id("deleteComplete"));
+    driver.wait(webdriver.until.elementIsVisible(deleteCompleteBut), 5000);
 };
 module.exports.setupErrorRoute = function(action, route) {
     if (action === "get") {
