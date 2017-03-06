@@ -1,5 +1,7 @@
 var app_ang = angular.module("todoApp", ["ngResource", "ngRoute", "ngAnimate"]);
-
+app_ang.run(function() {
+    console.log("app is runing");
+});
 app_ang.config(function($routeProvider) {
     $routeProvider.when("/", {
         controller: "TodoListCtrl as list",
@@ -59,7 +61,7 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
                 self.justDeleted = true;
                 self.refresh();
             }).catch(function(err) {
-                self.error = err;
+                self.handleError(err, "delete item(s)");
             });
     };
     // Update
@@ -124,11 +126,16 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
     };
     self.refresh();
     (function tick() {
-        Todo.get({id: "state"}, function(data) {
+        Todo.get({id: "state"}).$promise.then(function(data) {
             if (data.state !== self.state) {
                 self.state = data.state;
                 self.refresh();
+                if (self.error === "offline...") {
+                    self.error = "";
+                }
             }
+        }).catch(function(err) {
+            self.error = "offline...";
         });
         timeout(tick, 1000);
     })();
