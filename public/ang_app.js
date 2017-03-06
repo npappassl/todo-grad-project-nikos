@@ -6,6 +6,8 @@ app_ang.config(function($routeProvider) {
     $routeProvider.when("/", {
         controller: "TodoListCtrl as list",
         templateUrl: "TodoList.html"
+    }).otherwise({
+        redirectTo: "/"
     });
 });
 // Creates the $resource connection to the server
