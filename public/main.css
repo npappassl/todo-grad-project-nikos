@@ -73,6 +73,18 @@ nav span.active:hover{
   font-weight: 900;
   box-shadow: 0px 0px 0px 6px rgb(235, 237, 239);
 }
+.count{
+    font-size: 0.6em;
+    position: relative;
+    top:-1em;
+    color:white;
+    display: inline-block;
+    max-width: 10px;
+    max-height: 10px;
+    padding: 3px 3px 3px 3px;
+    border-radius: 5px;
+    background-color: #65286b;
+}
 #undoSpan{
     height: 5em;
     position:relative;
