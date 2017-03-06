@@ -25,7 +25,7 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
         complete: {class: ""},
         all: {class: ""}
     };
-    self.state = 0;
+    self.state = -1;
     self.error = "";
     self.editedTodo = null;
     self.newTodoField = "";
@@ -130,9 +130,9 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
             if (data.state !== self.state) {
                 self.state = data.state;
                 self.refresh();
-                if (self.error === "offline...") {
-                    self.error = "";
-                }
+            }
+            if (self.error === "offline...") {
+                self.error = "";
             }
         }).catch(function(err) {
             self.error = "offline...";
