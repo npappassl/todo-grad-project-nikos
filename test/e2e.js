@@ -108,7 +108,7 @@ testing.describe("end to end", function() {
             helpers.getLabelText().then(function(text) {
                 assert.equal(text, "You have 0 TODOs");
             });
-            helpers.isDeleteCompleteVisible();
+            assert.equal(helpers.isDeleteCompleteNotVisible(), true);
         });
         testing.it("going to complete tab filters to complete", function() {
             helpers.navigateToSite();

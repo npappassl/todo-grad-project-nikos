@@ -1,5 +1,7 @@
 var app_ang = angular.module("todoApp", ["ngResource", "ngRoute", "ngAnimate"]);
-
+app_ang.run(function() {
+    console.log("app is runing");
+});
 app_ang.config(function($routeProvider) {
     $routeProvider.when("/", {
         controller: "TodoListCtrl as list",
@@ -19,9 +21,9 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
     self.justDeleted = false;
     self.filterState = false;
     self.nav = {
-        onGoing: "active",
-        complete: "",
-        all: ""
+        onGoing: {class: "active"},
+        complete: {class: ""},
+        all: {class: ""}
     };
     self.state = 0;
     self.error = "";
@@ -37,7 +39,6 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
             return;
         }
         Todo.save(newTodo).$promise.then(function(data) {
-            console.log(data);
             self.newTodoField = "";
             self.refresh();
         }).catch(function(error) {
@@ -51,7 +52,7 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
                 self.justDeleted = true;
                 self.refresh();
             }).catch(function(err) {
-                self.error = "Failed to delete item(s). Server returned " + err.status + " - " + err.statusText;
+                self.handleError(err, "delete item(s)");
             });
     };
     self.deleteComplete = function() {
@@ -60,7 +61,7 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
                 self.justDeleted = true;
                 self.refresh();
             }).catch(function(err) {
-                self.error = err;
+                self.handleError(err, "delete item(s)");
             });
     };
     // Update
@@ -92,13 +93,22 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
             all: {filterS: "", complete: "", onGoing: "", all: "active"}
         };
         self.filterState = choices[tab].filterS;
-        self.nav.complete = choices[tab].complete;
-        self.nav.onGoing = choices[tab].onGoing;
-        self.nav.all = choices[tab].all;
+        self.nav.complete.class = choices[tab].complete;
+        self.nav.onGoing.class = choices[tab].onGoing;
+        self.nav.all.class = choices[tab].all;
+    };
+    self.refreshCounts = function() {
+        self.nav.all.size = self.todos.length;
+        self.nav.complete.size = self.todos.filter(function(todo) {
+            return todo.isComplete;
+        }).length;
+        self.nav.onGoing.size = self.nav.all.size - self.nav.complete.size;
     };
     self.refresh = function() {
         Todo.query(function(data) {
             self.todos = data;
+            self.refreshCounts();
+
         }).$promise.then(function(data) {
             self.placeholderClassName = "hidden";
         }).catch(function(error) {
@@ -116,11 +126,16 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
     };
     self.refresh();
     (function tick() {
-        Todo.get({id: "state"}, function(data) {
+        Todo.get({id: "state"}).$promise.then(function(data) {
             if (data.state !== self.state) {
                 self.state = data.state;
                 self.refresh();
+                if (self.error === "offline...") {
+                    self.error = "";
+                }
             }
+        }).catch(function(err) {
+            self.error = "offline...";
         });
         timeout(tick, 1000);
     })();

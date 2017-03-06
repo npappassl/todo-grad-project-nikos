@@ -116,9 +116,10 @@ module.exports.isUndoSpanVisible = function() {
     var undoSpan = driver.findElement(webdriver.By.id("undoSpan"));
     driver.wait(webdriver.until.elementTextContains(undoSpan, "Undo"), 5000);
 };
-module.exports.isDeleteCompleteVisible = function() {
+module.exports.isDeleteCompleteNotVisible = function() {
     var deleteCompleteBut = driver.findElement(webdriver.By.id("deleteComplete"));
-    driver.wait(webdriver.until.elementIsVisible(deleteCompleteBut), 5000);
+    driver.wait(webdriver.until.elementIsNotVisible(deleteCompleteBut), 5000);
+    return true;
 };
 module.exports.setupErrorRoute = function(action, route) {
     if (action === "get") {
