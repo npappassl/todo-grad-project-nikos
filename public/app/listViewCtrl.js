@@ -1,22 +1,5 @@
-var app_ang = angular.module("todoApp", ["ngResource", "ngRoute", "ngAnimate"]);
-app_ang.run(function() {
-    console.log("app is runing");
-});
-app_ang.config(function($routeProvider) {
-    $routeProvider.when("/", {
-        controller: "TodoListCtrl as list",
-        templateUrl: "TodoList.html"
-    }).otherwise({
-        redirectTo: "/"
-    });
-});
-// Creates the $resource connection to the server
-app_ang.factory("Todo", function($resource) {
-    var TodoObject = $resource("/api/todo/:id", {id: "@id"}, {
-        "update": {method: "PUT"}
-    });
-    return TodoObject;
-});
+var app_ang = angular.module("todoApp");
+
 app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) {
     var self = this;
     self.placeholderClassName = "";
