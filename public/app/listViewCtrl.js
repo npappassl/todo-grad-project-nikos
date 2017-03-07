@@ -1,32 +1,17 @@
-var app_ang = angular.module("todoApp", ["ngResource", "ngRoute", "ngAnimate"]);
-app_ang.run(function() {
-    console.log("app is runing");
-});
-app_ang.config(function($routeProvider) {
-    $routeProvider.when("/", {
-        controller: "TodoListCtrl as list",
-        templateUrl: "TodoList.html"
-    });
-});
-// Creates the $resource connection to the server
-app_ang.factory("Todo", function($resource) {
-    var TodoObject = $resource("/api/todo/:id", {id: "@id"}, {
-        "update": {method: "PUT"}
-    });
-    return TodoObject;
-});
 app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) {
     var self = this;
-    self.placeholderClassName = "";
-    self.justDeleted = false;
-    self.filterState = false;
     self.nav = {
         onGoing: {class: "active"},
         complete: {class: ""},
         all: {class: ""}
     };
-    self.state = -1;
-    self.error = "";
+    self.state = {
+        placeholderClassName: "",
+        justDeleted: false,
+        filterState: false,
+        stateId: -1,
+        error: ""
+    };
     self.editedTodo = null;
     self.newTodoField = "";
     // new todo
@@ -47,18 +32,9 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
     };
     // Delete
     self.deleteTodo = function(todo) {
-        Todo.delete({id: todo.id}).$promise
+        Todo.delete({id: todo.id || "complete"}).$promise
             .then(function(data) {
-                self.justDeleted = true;
-                self.refresh();
-            }).catch(function(err) {
-                self.handleError(err, "delete item(s)");
-            });
-    };
-    self.deleteComplete = function() {
-        Todo.delete({id: "complete"}).$promise
-            .then(function(data) {
-                self.justDeleted = true;
+                self.state.justDeleted = true;
                 self.refresh();
             }).catch(function(err) {
                 self.handleError(err, "delete item(s)");
@@ -83,7 +59,8 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
     };
     self.handleError = function(error, failedAction) {
         if (error) {
-            self.error = "Failed to " + failedAction + ". Server returned " + error.status + " - " + error.statusText;
+            self.state.error = "Failed to " + failedAction + ". Server returned " +
+                error.status + " - " + error.statusText;
         }
     };
     self.getTab = function(tab) {
@@ -92,7 +69,7 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
             onGoing: {filterS: false, complete: "", onGoing: "active", all: ""},
             all: {filterS: "", complete: "", onGoing: "", all: "active"}
         };
-        self.filterState = choices[tab].filterS;
+        self.state.filterState = choices[tab].filterS;
         self.nav.complete.class = choices[tab].complete;
         self.nav.onGoing.class = choices[tab].onGoing;
         self.nav.all.class = choices[tab].all;
@@ -110,13 +87,13 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
             self.refreshCounts();
 
         }).$promise.then(function(data) {
-            self.placeholderClassName = "hidden";
+            self.state.placeholderClassName = "hidden";
         }).catch(function(error) {
             self.handleError(error, "get list");
         });
     };
     self.hideUndoSpan = function() {
-        self.justDeleted = false;
+        self.state.justDeleted = false;
     };
     self.undoDelete = function() {
         Todo.update({id: "undo"}, function() {
@@ -124,18 +101,19 @@ app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) 
             self.refresh();
         });
     };
+
     self.refresh();
     (function tick() {
         Todo.get({id: "state"}).$promise.then(function(data) {
-            if (data.state !== self.state) {
-                self.state = data.state;
+            if (data.state !== self.state.stateId) {
+                self.state.stateId = data.state;
                 self.refresh();
             }
-            if (self.error === "offline...") {
-                self.error = "";
+            if (self.state.error === "offline...") {
+                self.state.error = "";
             }
         }).catch(function(err) {
-            self.error = "offline...";
+            self.state.error = "offline...";
         });
         timeout(tick, 1000);
     })();
