@@ -8,20 +8,20 @@
   <span id="nav-all" class="{{list.nav.all.class}}" ng-click="list.getTab(&quot;all&quot;)">
       All <span class="count">{{list.nav.all.size}}</span>
   </span>
-  <span class="no-animate" ng-if="list.justDeleted == true" id="undoSpan">
+  <span id="undoSpan" class="no-animate" ng-if="list.state.justDeleted === true">
       <span id="closePopup" ng-click="list.hideUndoSpan()">X</span>You just deleted some items... <a ng-click="list.undoDelete()">Undo</a>
   </span>
 </nav>
-<h2 id="todo-list-placeholder" class="{{list.placeholderClassName}}">Loading...</h2>
+<h2 id="todo-list-placeholder" class="{{list.state.placeholderClassName}}">Loading...</h2>
 <p id="count-label">You have {{filtered.length}} TODOs</p>
 <form ng-submit="list.addTodo()" novalidate id="todo-form">
     <input ng-model="list.newTodoField" id="new-todo" placeholder="What needs to be done?" autofocus>
     <input id="submit-todo" type="submit" value="post">
 
 </form>
-<button class="no-animate" ng-show="list.filterState==true && filtered.length>0" ng-click="list.deleteComplete()" id="deleteComplete">Delete Completed</button>
+<button id="deleteComplete" class="no-animate" ng-show="list.state.filterState==true && filtered.length>0" ng-click="list.deleteTodo({id:complete})">Delete Completed</button>
 <ul id="todo-list">
-    <li class="fade" ng-repeat="todo in filtered = (list.todos | filter:{ isComplete: list.filterState }) track by $index" ng-class="{complete: todo.isComplete, editing: todo == list.editedTodo}" >
+    <li class="fade" ng-repeat="todo in filtered = (list.todos | filter:{ isComplete: list.state.filterState }) track by $index" ng-class="{complete: todo.isComplete, editing: todo == list.editedTodo}" >
         <span class="numbering">{{$index +1}}</span>
         <label class="todoTextBody" ng-dblclick="list.updateTodo($event,todo)">{{todo.title}}</label>
         <span class="buttonSpan">
@@ -34,4 +34,4 @@
         </form>
     </li>
 </ul>
-<div id="error">{{list.error}}</div>
+<div id="error">{{list.state.error}}</div>
