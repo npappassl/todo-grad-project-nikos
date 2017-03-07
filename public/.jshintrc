@@ -7,6 +7,7 @@
   "browser": true,
   "globals": {
     "console": true,
-    "angular":true
+    "angular":true,
+    "app_ang":true
   }
 }

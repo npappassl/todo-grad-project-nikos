@@ -10,6 +10,13 @@ module.exports = function(grunt) {
     var testOutputLocation = process.env.CIRCLE_TEST_REPORTS || "test_output";
     var artifactsLocation = "build_artifacts";
     grunt.initConfig({
+        uglify: {
+            my_target: {
+                files: {
+                    "public/main.js": ["public/app/app.js", "public/app/todo-factory.js", "public/app/listViewCtrl.js"]
+                }
+            }
+        },
         watch: {
             express: {
                 files: ["server.js", "server/server.js" , "public/*.css"],
@@ -31,13 +38,13 @@ module.exports = function(grunt) {
             }
         },
         jshint: {
-            all: ["Gruntfile.js", "server.js", "server/**/*.js", "test/**/*.js", "public/**/*.js"],
+            all: ["Gruntfile.js", "server.js", "server/**/*.js", "test/**/*.js", "public/app/*.js"],
             options: {
                 jshintrc: true
             }
         },
         jscs: {
-            all: ["Gruntfile.js", "server.js", "server/**/*.js", "test/**/*.js", "public/**/*.js"]
+            all: ["Gruntfile.js", "server.js", "server/**/*.js", "test/**/*.js", "public/app/*.js"]
         },
         mochaTest: {
             test: {
@@ -116,5 +123,5 @@ module.exports = function(grunt) {
     grunt.registerTask("ci-test", ["check", "mochaTest:ci", "mocha_istanbul:ci", "istanbul_report",
         "istanbul_check_coverage"]);
     grunt.registerTask("serve", ["express:dev", "watch"]);
-    grunt.registerTask("default", ["test", "serve"]);
+    grunt.registerTask("default", ["uglify", "test", "serve"]);
 };

@@ -1,5 +1,3 @@
-var app_ang = angular.module("todoApp");
-
 app_ang.controller("TodoListCtrl", ["$timeout", "Todo", function(timeout, Todo) {
     var self = this;
     self.placeholderClassName = "";
