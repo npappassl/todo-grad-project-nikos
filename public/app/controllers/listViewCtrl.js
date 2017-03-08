@@ -1,5 +1,6 @@
 angular.module("todoApp")
     .controller("TodoListCtrl", ["pollService", "Todo", function(pollService, Todo) {
+        console.log("TodoListCtrl","init");
     var self = this;
     self.nav = {
         onGoing: {class: "active"},
@@ -43,12 +44,6 @@ angular.module("todoApp")
     };
     self.hideUndoSpan = function() {
         self.state.justDeleted = false;
-    };
-    self.undoDelete = function() {
-        Todo.update({id: "undo"}, function() {
-            self.hideUndoSpan();
-            self.refresh();
-        });
     };
     pollService.setRefresh("TodoListCtrl", self.refresh);
     pollService.setError(self.state);

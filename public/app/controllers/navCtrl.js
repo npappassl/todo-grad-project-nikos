@@ -1,4 +1,5 @@
 angular.module("todoApp").controller("navCtrl", ["pollService", "Todo", function(pollService, Todo) {
+    console.log("navCtrl","init");
     var self = this;
     self.nav = {
         onGoing: {class: "active"},
@@ -27,5 +28,4 @@ angular.module("todoApp").controller("navCtrl", ["pollService", "Todo", function
     };
     pollService.setRefresh("navCtrl", self.refresh);
     self.refresh();
-    pollService.tick("navCtrl");
 }]);

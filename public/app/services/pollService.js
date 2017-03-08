@@ -1,8 +1,12 @@
-angular.module("todoApp").service("pollService", ["$rootScope", "$timeout", "Todo", function(rScope, timeout, Todo) {
+angular.module("todoApp").service("pollService", ["$timeout", "Todo", function(timeout, Todo) {
+    console.log("pollService","init");
     var self = this;
     self.stateId = -1;
     self.refreshes = {};
     self.filterState = false;
+    self.justDeleted = {
+        value:false
+    };
     self.errorDiv = {
         text: ""
     };
@@ -14,17 +18,11 @@ angular.module("todoApp").service("pollService", ["$rootScope", "$timeout", "Tod
         self.refresh("TodoListCtrl");
     };
 
-    self.tick = function(refresh, attribute, retobject) {
+    self.tick = function(refresh) {
         Todo.get({id: "state"}).$promise.then(function(data) {
             if (data.state !== self.stateId) {
                 self.stateId = data.state;
-                if(attribute){
-                    retobject[attribute] = self[attribute];
-                }
-                refresh();
-            }
-            if (error === "offline...") {
-                error = "";
+                self.refresh();
             }
         }).catch(function(err) {
             console.log(err, "offline");
@@ -34,13 +32,13 @@ angular.module("todoApp").service("pollService", ["$rootScope", "$timeout", "Tod
         } , 1000);
     };
     self.setUndo = function(justDeleted) {
-        self.justDeleted = justDeleted.justDeleted;
+        self.justDeleted = justDeleted;
     }
     self.showUndoSpan = function() {
-        self.justDeleted = true;
+        self.justDeleted.value = true;
     };
     self.hideUndoSpan = function() {
-        self.justDeleted = false;
+        self.justDeleted.value = false;
     };
     self.setError = function(err) {
         self.errorDiv = err.error;
@@ -65,7 +63,4 @@ angular.module("todoApp").service("pollService", ["$rootScope", "$timeout", "Tod
             self.refreshes["TodoListCtrl"]();
         }
     }
-    self.increment = function() {
-        self.stateId++;
-    };
 }]);
