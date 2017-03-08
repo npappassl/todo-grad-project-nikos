@@ -1,12 +1,12 @@
 <nav ng-controller="navCtrl as n">
-  <span id="nav-complete" class="{{list.nav.complete.class}}" ng-click="list.getTab(&quot;complete&quot;)">
-      Complete <span class="count">{{list.nav.complete.size}}</span>
+  <span id="nav-complete" class="{{n.nav.complete.class}}" ng-click="n.getTab(&quot;complete&quot;)">
+      Complete <span class="count">{{n.nav.complete.size}}</span>
   </span>
-  <span id="nav-onGoing" class="{{list.nav.onGoing.class}}" ng-click="list.getTab(&quot;onGoing&quot;)">
-      OnGoing <span class="count">{{list.nav.onGoing.size}}</span>
+  <span id="nav-onGoing" class="{{n.nav.onGoing.class}}" ng-click="n.getTab(&quot;onGoing&quot;)">
+      OnGoing <span class="count">{{n.nav.onGoing.size}}</span>
   </span>
-  <span id="nav-all" class="{{list.nav.all.class}}" ng-click="list.getTab(&quot;all&quot;)">
-      All <span class="count">{{list.nav.all.size}}</span>
+  <span id="nav-all" class="{{n.nav.all.class}}" ng-click="n.getTab(&quot;all&quot;)">
+      All <span class="count">{{n.nav.all.size}}</span>
   </span>
   <span id="undoSpan" class="no-animate" ng-if="list.state.justDeleted === true">
       <span id="closePopup" ng-click="list.hideUndoSpan()">X</span>You just deleted some items... <a ng-click="list.undoDelete()">Undo</a>
