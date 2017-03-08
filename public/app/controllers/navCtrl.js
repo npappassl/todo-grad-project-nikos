@@ -22,12 +22,9 @@ angular.module("todoApp").controller("navCtrl", ["pollService", "Todo", function
         self.nav.onGoing.class = choices[tab].onGoing;
         self.nav.all.class = choices[tab].all;
         pollService.setFilter(choices[tab].filterS);
-        pollService.increment();
+        pollService.refresh();
     };
-    pollService.tick(function(err, mess) {
-            console.log(err, mes);
-    }, function() {
-        console.log("refreshNav");
-        self.refresh();
-    });
+    pollService.setRefresh("navCtrl", self.refresh);
+    self.refresh();
+    pollService.tick("navCtrl");
 }]);

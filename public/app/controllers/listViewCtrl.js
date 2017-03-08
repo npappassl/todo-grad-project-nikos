@@ -13,16 +13,6 @@ angular.module("todoApp")
         error: ""
     };
     self.editedTodo = null;
-    // Delete
-    self.deleteTodo = function(todo) {
-        Todo.delete({id: todo.id || "complete"}).$promise
-            .then(function(data) {
-                self.state.justDeleted = true;
-                self.refresh();
-            }).catch(function(err) {
-                self.handleError(err, "delete item(s)");
-            });
-    };
     // Update
     self.doneTodo = function(todo) {
         Todo.update({id: todo.id}, {isComplete: true});
@@ -40,25 +30,11 @@ angular.module("todoApp")
         Todo.update({id: todo.id}, {title: todo.title});
         self.refresh();
     };
-    self.handleError = function(error, failedAction) {
-        if (error) {
-            self.state.error = "Failed to " + failedAction + ". Server returned " +
-                error.status + " - " + error.statusText;
-        }
-    };
-    self.refreshCounts = function() {
-        self.nav.all.size = self.todos.length;
-        self.nav.complete.size = self.todos.filter(function(todo) {
-            return todo.isComplete;
-        }).length;
-        self.nav.onGoing.size = self.nav.all.size - self.nav.complete.size;
-    };
     self.refresh = function() {
         console.log("refreshList");
+        self.state.filterState = pollService.getFilter().filter;
         Todo.query(function(data) {
             self.todos = data;
-            self.refreshCounts();
-
         }).$promise.then(function(data) {
             self.state.placeholderClassName = "hidden";
         }).catch(function(error) {
@@ -74,8 +50,8 @@ angular.module("todoApp")
             self.refresh();
         });
     };
-
+    pollService.setRefresh("TodoListCtrl", self.refresh);
+    pollService.setError(self.state.error);
     self.refresh();
-    self.on
-    pollService.tick(self.handleError,self.refresh, "filterState", self.state);
+    pollService.tick("TodoListCtrl");
 }]);

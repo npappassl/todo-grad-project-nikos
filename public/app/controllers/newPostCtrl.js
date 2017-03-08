@@ -1,7 +1,6 @@
-angular.module("todoApp").controller("newPostCtrl", ["Todo", function(Todo) {
+angular.module("todoApp").controller("newPostCtrl", ["pollService", "Todo", function(pollService, Todo) {
     var self = this;
     self.newTodoField = "";
-
     // new todo
     self.addTodo = function () {
         var newTodo = {
@@ -13,9 +12,9 @@ angular.module("todoApp").controller("newPostCtrl", ["Todo", function(Todo) {
         }
         Todo.save(newTodo).$promise.then(function(data) {
             self.newTodoField = "";
-            self.refresh();
+            pollService.refresh();
         }).catch(function(error) {
-            self.handleError(error, "create item");
+            // pollService.handleError(error);// self.handleError(error, "create item");
         });
     };
 
