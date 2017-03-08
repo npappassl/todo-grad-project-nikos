@@ -1,0 +1,23 @@
+<h2 id="todo-list-placeholder" class="{{list.state.placeholderClassName}}">Loading...</h2>
+<p id="count-label">You have {{filtered.length}} TODOs</p>
+<form ng-submit="list.addTodo()" novalidate id="todo-form">
+    <input ng-model="list.newTodoField" id="new-todo" placeholder="What needs to be done?" autofocus>
+    <input id="submit-todo" type="submit" value="post">
+
+</form>
+<button id="deleteComplete" class="no-animate" ng-show="list.state.filterState==true && filtered.length>0" ng-click="list.deleteTodo({id:complete})">Delete Completed</button>
+<ul id="todo-list">
+    <li class="fade" ng-repeat="todo in filtered = (list.todos | filter:{ isComplete: list.state.filterState }) track by $index" ng-class="{complete: todo.isComplete, editing: todo == list.editedTodo}" >
+        <span class="numbering">{{$index +1}}</span>
+        <label class="todoTextBody" ng-dblclick="list.updateTodo($event,todo)">{{todo.title}}</label>
+        <span class="buttonSpan">
+            <button class="delButton" id="del{{$index}}" ng-click="list.deleteTodo(todo)">x</button>
+            <button class="complButton" id="compl{{$index}}" ng-click="list.doneTodo(todo)">✓</button>
+        </span>
+        <form id="edit-form" ng-submit="list.updateDB(todo)">
+            <input class="edit" ng-trim="false" ng-model="todo.title" ng-blur="list.updateDB(todo)" todo-focus="todo == list.editedTodo" >
+            <input class="confirmUpdate" type="submit" value="✒">
+        </form>
+    </li>
+</ul>
+<div id="error">{{list.state.error}}</div>
