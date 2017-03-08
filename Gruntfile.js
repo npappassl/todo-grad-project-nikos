@@ -13,7 +13,14 @@ module.exports = function(grunt) {
         uglify: {
             my_target: {
                 files: {
-                    "public/main.js": ["public/app/app.js", "public/app/todo-factory.js", "public/app/listViewCtrl.js"]
+                    "public/main.js": [
+                        "public/app/app.js",
+                        "public/app/todo-factory.js",
+                        "public/app/controllers/listViewCtrl.js",
+                        "public/app/controllers/navCtrl.js",
+                        "public/app/controllers/newPostCtrl.js",
+                        "public/app/controllers/mainCtrl.js"
+                    ]
                 }
             }
         },
