@@ -5,6 +5,7 @@ angular.module("todoApp").controller("navCtrl", ["pollService", "Todo", function
         complete: {class: ""},
         all: {class: ""}
     };
+    self.justDeleted = false;
     self.refresh = function() {
         Todo.query().$promise.then(function(data) {
         self.nav.all.size = data.length;

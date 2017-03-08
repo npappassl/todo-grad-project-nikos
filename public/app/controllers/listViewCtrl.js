@@ -10,14 +10,13 @@ angular.module("todoApp")
         placeholderClassName: "",
         justDeleted: false,
         filterState: false,
-        error: ""
+        error: {
+            text:""
+        }
     };
+
     self.editedTodo = null;
     // Update
-    self.doneTodo = function(todo) {
-        Todo.update({id: todo.id}, {isComplete: true});
-        self.refresh();
-    };
     self.updateTodo = function ($event, todo) {
         self.editedTodo = todo;
         self.originalTodo = angular.extend({}, todo);
@@ -25,6 +24,7 @@ angular.module("todoApp")
             $event.target.parentNode.getElementsByClassName("edit")[0].focus();
         }, 200);
     };
+
     // Aux
     self.updateDB = function (todo) {
         Todo.update({id: todo.id}, {title: todo.title});
@@ -38,7 +38,7 @@ angular.module("todoApp")
         }).$promise.then(function(data) {
             self.state.placeholderClassName = "hidden";
         }).catch(function(error) {
-            self.handleError(error, "get list");
+            pollService.handleError(error, "get list");
         });
     };
     self.hideUndoSpan = function() {
@@ -51,7 +51,7 @@ angular.module("todoApp")
         });
     };
     pollService.setRefresh("TodoListCtrl", self.refresh);
-    pollService.setError(self.state.error);
+    pollService.setError(self.state);
     self.refresh();
     pollService.tick("TodoListCtrl");
 }]);

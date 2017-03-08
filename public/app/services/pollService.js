@@ -1,14 +1,17 @@
-angular.module("todoApp").service("pollService", ["$timeout", "Todo", function(timeout, Todo) {
+angular.module("todoApp").service("pollService", ["$rootScope", "$timeout", "Todo", function(rScope, timeout, Todo) {
     var self = this;
     self.stateId = -1;
     self.refreshes = {};
     self.filterState = false;
-    self.errorDiv;
+    self.errorDiv = {
+        text: ""
+    };
     self.handleError = function(error, failedAction) {
         if (error) {
-            self.errorDiv = "Failed to " + failedAction + ". Server returned " +
+            self.errorDiv.text = "Failed to " + failedAction + ". Server returned " +
                 error.status + " - " + error.statusText;
         }
+        self.refresh("TodoListCtrl");
     };
 
     self.tick = function(refresh, attribute, retobject) {
@@ -24,14 +27,23 @@ angular.module("todoApp").service("pollService", ["$timeout", "Todo", function(t
                 error = "";
             }
         }).catch(function(err) {
-            self.handleError(err, "offline");
+            console.log(err, "offline");
         });
         timeout(function() {
             self.tick(error, refresh);
         } , 1000);
     };
+    self.setUndo = function(justDeleted) {
+        self.justDeleted = justDeleted.justDeleted;
+    }
+    self.showUndoSpan = function() {
+        self.justDeleted = true;
+    };
+    self.hideUndoSpan = function() {
+        self.justDeleted = false;
+    };
     self.setError = function(err) {
-        self.errorDiv = err;
+        self.errorDiv = err.error;
     };
     self.setFilter = function(filter) {
         self.filterState = filter;

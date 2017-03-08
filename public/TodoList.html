@@ -8,11 +8,12 @@
   <span id="nav-all" class="{{n.nav.all.class}}" ng-click="n.getTab(&quot;all&quot;)">
       All <span class="count">{{n.nav.all.size}}</span>
   </span>
-  <span id="undoSpan" class="no-animate" ng-if="list.state.justDeleted === true">
-      <span id="closePopup" ng-click="list.hideUndoSpan()">X</span>You just deleted some items... <a ng-click="list.undoDelete()">Undo</a>
-  </span>
 </nav>
-
+<div ng-conroller="undoCtrl as undo">
+<span id="undoSpan" class="no-animate" ng-if="undo.justDeleted === true">
+    <span id="closePopup" ng-click="undo.hideUndoSpan()">X</span>You just deleted some items... <a ng-click="undo.undoDelete()">Undo</a>
+</span>
+</div>
 <div ng-controller="newPostCtrl as np">
     <form ng-submit="np.addTodo()" novalidate id="todo-form">
         <input ng-model="np.newTodoField" id="new-todo" placeholder="What needs to be done?" autofocus>
@@ -39,5 +40,5 @@
         </form>
     </li>
 </ul>
-<div id="error">{{list.state.error}}</div>
+<div id="error">{{list.state.error.text}}</div>
 </div>

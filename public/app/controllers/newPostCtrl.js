@@ -14,7 +14,7 @@ angular.module("todoApp").controller("newPostCtrl", ["pollService", "Todo", func
             self.newTodoField = "";
             pollService.refresh();
         }).catch(function(error) {
-            // pollService.handleError(error);// self.handleError(error, "create item");
+            pollService.handleError(error, "create item");
         });
     };
 
