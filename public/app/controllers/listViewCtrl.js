@@ -2,17 +2,13 @@ angular.module("todoApp")
     .controller("TodoListCtrl", ["pollService", "Todo", function(pollService, Todo) {
         console.log("TodoListCtrl","init");
     var self = this;
-    self.nav = {
-        onGoing: {class: "active"},
-        complete: {class: ""},
-        all: {class: ""}
+    self.todos = {
+        value:pollService.getTodos()
     };
     self.state = {
-        placeholderClassName: "",
-        justDeleted: false,
-        error: {
-            text:""
-        }
+        placeholderClassName: pollService.getPlaceholderClassName(),
+        filterState: pollService.getFilter(),
+        error: pollService.getError()
     };
 
     self.editedTodo = null;
@@ -24,28 +20,8 @@ angular.module("todoApp")
             $event.target.parentNode.getElementsByClassName("edit")[0].focus();
         }, 200);
     };
-
-    // Aux
-    self.updateDB = function (todo) {
-        Todo.update({id: todo.id}, {title: todo.title});
-        self.refresh();
+    self.updateDB = function(todo) {
+        pollService.updateDB(todo);
     };
-    self.refresh = function() {
-        console.log("refreshList");
-        Todo.query(function(data) {
-            self.todos = data;
-        }).$promise.then(function(data) {
-            self.state.placeholderClassName = "hidden";
-        }).catch(function(error) {
-            pollService.handleError(error, "get list");
-        });
-    };
-    self.hideUndoSpan = function() {
-        self.state.justDeleted = false;
-    };
-    pollService.setRefresh("TodoListCtrl", self.refresh);
-    self.state.filterState = pollService.getFilter();
-    self.state.error = pollService.getError();
-    self.refresh();
     pollService.tick("TodoListCtrl");
 }]);
