@@ -1,4 +1,4 @@
-angular.module("todoApp").service("interService", ["$timeout", "Todo", function(timeout, Todo) {
+angular.module("todoApp").service("interService", ["pollService", "$timeout", "Todo", function(pollService, timeout, Todo) {
     var self = this;
     self.refreshes = {};
     self.filterState = {
@@ -53,26 +53,22 @@ angular.module("todoApp").service("interService", ["$timeout", "Todo", function(
         self.refresh();
     };
 
-    self.refresh = function(name){
-        console.log("before",self.todos);
-        Todo.query(function(data) {
-            console.log("data " + data[0]);
+    self.refresh = function(){
+        Todo.query().$promise.then(function(data) {
             self.todos.length = 0;
             for(var i in data){
                 if(data[i].id){
                     self.todos.push(data[i]);
                 }
             }
-        }).$promise.then(function(data) {
             self.placeholderClassName.value = "hidden";
             self.refreshes["navCtrl"]();
         }).catch(function(error) {
-            self.handleError(error, "get list");
+            if(error){
+                self.handleError(error, "get list");
+            }
         });
-        console.log("name",name);
-        if (name){
-            self.refreshes[name]();
-        }
     }
     self.refresh();
+    pollService.tick(self.refresh);
 }]);

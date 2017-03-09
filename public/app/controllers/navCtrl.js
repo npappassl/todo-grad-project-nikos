@@ -29,6 +29,6 @@ angular.module("todoApp").controller("navCtrl", ["interService", function(interS
         // interService.refresh();
     };
     self.filterState = interService.getFilter();
-    interService.setRefresh("navCtrl", self.refresh);
     self.refresh();
+    interService.setRefresh("navCtrl", self.refresh);
 }]);

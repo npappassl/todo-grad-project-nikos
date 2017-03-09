@@ -1,20 +1,21 @@
 angular.module("todoApp").service("pollService",
-    ["interService", "$timeout", "Todo", function(interService, timeout, Todo) {
+    ["$timeout", "Todo", function(timeout, Todo) {
+        console.log("pollService init")
         var self = this;
         self.stateId = -1;
 
-        self.tick = function() {
+        self.tick = function(refresh) {
             Todo.get({id: "state"}).$promise.then(function(data) {
                 if (data.state !== self.stateId) {
                     self.stateId = data.state;
-                    interService.refresh();
+                    refresh();
+                    console.log("has to refressh");
                 }
             }).catch(function(err) {
                 console.log(err, "offline");
             });
             timeout(function() {
-                self.tick();
+                self.tick(refresh);
             } , 1000);
         };
-        self.tick();
 }]);
