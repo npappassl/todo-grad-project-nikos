@@ -15,8 +15,8 @@ module.exports = function(grunt) {
                 files: {
                     "public/main.js": [
                         "public/app/app.js",
-                        "public/app/directives/*.js",
                         "public/app/todo-factory.js",
+                        "public/app/directives/*.js",
                         "public/app/services/*.js",
                         "public/app/controllers/*.js"
                     ]

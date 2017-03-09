@@ -1,21 +1,21 @@
-angular.module("todoApp").controller("undoCtrl", ["pollService", "Todo", function(pollService, Todo){
+angular.module("todoApp").controller("undoCtrl", ["interService", "Todo", function(interService, Todo){
     console.log("undoCtrl","init");
     var self = this;
     self.justDeleted = {
         value:false
     };
-    pollService.setUndo(self.justDeleted);
+    interService.setUndo(self.justDeleted);
     self.hideUndoSpan = function() {
-        pollService.hideUndoSpan();
-        pollService.refresh();
+        interService.hideUndoSpan();
+        interService.refresh();
     };
 
     self.undoDelete = function() {
-        pollService.hideUndoSpan();
+        interService.hideUndoSpan();
         Todo.update({id: "undo"}, function(data) {
-            pollService.refresh();
+            interService.refresh();
         }).$promise.catch(function(err) {
-            pollService.handleError(err, "undo");
+            interService.handleError(err, "undo");
         });
     };
 
