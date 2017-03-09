@@ -1,19 +1,21 @@
-angular.module("todoApp").controller("navCtrl", ["pollService", "Todo", function(pollService, Todo) {
+angular.module("todoApp").controller("navCtrl", ["pollService", function(pollService) {
     console.log("navCtrl","init");
     var self = this;
+    self.todos = {
+        value:pollService.getTodos()
+    };
+
     self.nav = {
         onGoing: {class: "active"},
         complete: {class: ""},
         all: {class: ""}
     };
-    self.justDeleted = false;
+
     self.refresh = function() {
-        Todo.query().$promise.then(function(data) {
-        self.nav.all.size = data.length;
-        self.nav.complete.size = data.filter(function(a) {return a.isComplete;}).length;
+        self.nav.all.size = self.todos.value.length;
+        self.nav.complete.size = self.todos.value.filter(function(a) {return a.isComplete;}).length;
         self.nav.onGoing.size = self.nav.all.size - self.nav.complete.size;
-        console.log(data);
-    })};
+    };
     self.getTab = function(tab) {
         var choices = {
             complete: {filterS: true, complete: "active", onGoing: "", all: ""},
@@ -24,7 +26,7 @@ angular.module("todoApp").controller("navCtrl", ["pollService", "Todo", function
         self.nav.onGoing.class = choices[tab].onGoing;
         self.nav.all.class = choices[tab].all;
         self.filterState.value = choices[tab].filterS;
-        pollService.refresh();
+        // pollService.refresh();
     };
     self.filterState = pollService.getFilter();
     pollService.setRefresh("navCtrl", self.refresh);

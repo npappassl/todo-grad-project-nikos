@@ -6,8 +6,12 @@ angular.module("todoApp").service("pollService", ["$timeout", "Todo", function(t
     self.filterState = {
         value:false
     };
+    self.todos = [];
     self.justDeleted = {
         value:false
+    };
+    self.placeholderClassName = {
+        value:""
     };
     self.errorDiv = {
         text: ""
@@ -17,7 +21,6 @@ angular.module("todoApp").service("pollService", ["$timeout", "Todo", function(t
             self.errorDiv.text = "Failed to " + failedAction + ". Server returned " +
                 error.status + " - " + error.statusText;
         }
-        self.refresh("TodoListCtrl");
     };
 
     self.tick = function(refresh) {
@@ -48,18 +51,43 @@ angular.module("todoApp").service("pollService", ["$timeout", "Todo", function(t
     self.getFilter = function() {
         return self.filterState;
     };
+    self.getTodos = function(){
+        return self.todos;
+    };
+    self.getPlaceholderClassName = function() {
+        return self.placeholderClassName;
+    }
     self.setRefresh = function(name, func) {
         self.refreshes[name] = function() {
             func();
         }
     };
+    // Aux
+    self.updateDB = function (todo) {
+        Todo.update({id: todo.id}, {title: todo.title});
+        self.refresh();
+    };
+
     self.refresh = function(name){
+        console.log("before",self.todos);
+        Todo.query(function(data) {
+            console.log("data " + data[0]);
+            self.todos.length = 0;
+            for(var i in data){
+                if(data[i].id){
+                    self.todos.push(data[i]);
+                }
+            }
+        }).$promise.then(function(data) {
+            self.placeholderClassName.value = "hidden";
+            self.refreshes["navCtrl"]();
+        }).catch(function(error) {
+            self.handleError(error, "get list");
+        });
         console.log("name",name);
         if (name){
             self.refreshes[name]();
-        } else {
-            self.refreshes["navCtrl"]();
-            self.refreshes["TodoListCtrl"]();
         }
     }
+    self.refresh();
 }]);
