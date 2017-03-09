@@ -23,5 +23,4 @@ angular.module("todoApp")
     self.updateDB = function(todo) {
         interService.updateDB(todo);
     };
-    interService.tick("TodoListCtrl");
 }]);
