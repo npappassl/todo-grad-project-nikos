@@ -108,7 +108,7 @@ module.exports.completeTodo = function(index) {
     complBut.click();
 };
 module.exports.deleteCompletedTodos = function() {
-    var deleteCompleteBut = driver.findElement(webdriver.By.id("deleteComplete"));
+    var deleteCompleteBut = driver.findElement(webdriver.By.id("delComplete"));
     driver.wait(webdriver.until.elementIsVisible(deleteCompleteBut), 5000);
     deleteCompleteBut.click();
 };
@@ -117,7 +117,7 @@ module.exports.isUndoSpanVisible = function() {
     driver.wait(webdriver.until.elementTextContains(undoSpan, "Undo"), 5000);
 };
 module.exports.isDeleteCompleteNotVisible = function() {
-    var deleteCompleteBut = driver.findElement(webdriver.By.id("deleteComplete"));
+    var deleteCompleteBut = driver.findElement(webdriver.By.id("delComplete"));
     driver.wait(webdriver.until.elementIsNotVisible(deleteCompleteBut), 5000);
     return true;
 };

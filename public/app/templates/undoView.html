@@ -1,0 +1,7 @@
+<span id="undoSpan" class="no-animate" ng-if="undo.justDeleted.value === true">
+    <span class="no-animate" id="closePopup" ng-click="undo.hideUndoSpan()">
+        X
+    </span>
+    You just deleted some items...
+    <a ng-click="undo.undoDelete()">Undo</a>
+</span>

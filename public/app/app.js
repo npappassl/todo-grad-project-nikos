@@ -1,10 +1,10 @@
 var app_ang = angular.module("todoApp", ["ngResource", "ngRoute", "ngAnimate"]);
-app_ang.run(function() {
+angular.module("todoApp").run(function() {
     console.log("app is runing");
 });
-app_ang.config(["$routeProvider", function($routeProvider) {
+angular.module("todoApp").config(["$routeProvider", function($routeProvider) {
     $routeProvider.when("/", {
-        controller: "TodoListCtrl as list",
+        controller: "mainCtrl as main",
         templateUrl: "TodoList.html"
     }).otherwise({
         redirectTo: "/"

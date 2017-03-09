@@ -1,0 +1,14 @@
+<nav >
+  <span id="nav-complete" class="{{n.nav.complete.class}}" ng-click="n.getTab(&quot;complete&quot;)">
+      Complete <span class="count">{{n.nav.complete.size}}</span>
+  </span>
+  <span id="nav-onGoing" class="{{n.nav.onGoing.class}}" ng-click="n.getTab(&quot;onGoing&quot;)">
+      OnGoing <span class="count">{{n.nav.onGoing.size}}</span>
+  </span>
+  <span id="nav-all" class="{{n.nav.all.class}}" ng-click="n.getTab(&quot;all&quot;)">
+      All <span class="count">{{n.nav.all.size}}</span>
+  </span>
+
+  <ng-include src="'app/templates/undoView.html'" ng-controller="undoCtrl as undo"></ng-include>
+
+</nav>
