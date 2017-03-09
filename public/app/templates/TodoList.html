@@ -1,12 +1,12 @@
 <h2 id="todo-list-placeholder" class="{{list.state.placeholderClassName}}">Loading...</h2>
 <p id="count-label">You have {{filtered.length}} TODOs</p>
-<button id="deleteComplete" class="no-animate" ng-show="list.state.filterState==true && filtered.length>0" ng-click="list.deleteTodo({id:complete})">Delete Completed</button>
+<nipa-del-but todo="{id:'complete'}" index="'Complete'" display="'Delete Completed'" ng-show="list.state.filterState.value==true && filtered.length>0"></nipa-del-but>
 <ul id="todo-list">
-    <li class="fade" ng-repeat="todo in filtered = (list.todos | filter:{ isComplete: list.state.filterState }) track by $index" ng-class="{complete: todo.isComplete, editing: todo == list.editedTodo}" >
+    <li class="fade" ng-repeat="todo in filtered = (list.todos | filter:{ isComplete: list.state.filterState.value }) track by $index" ng-class="{complete: todo.isComplete, editing: todo == list.editedTodo}" >
         <span class="numbering">{{$index +1}}</span>
         <label class="todoTextBody" ng-dblclick="list.updateTodo($event,todo)">{{todo.title}}</label>
         <span class="buttonSpan">
-            <nipa-del-but todo="todo" index="$index"></nipa-del-but>
+            <nipa-del-but todo="todo" index="$index" display="'X'"></nipa-del-but>
             <nipa-compl-but todo="todo" index="$index"></nipa-compl-but>
             <!-- <button class="complButton" id="compl{{$index}}" ng-click="list.doneTodo(todo)">✓</button> -->
         </span>

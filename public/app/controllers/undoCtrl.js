@@ -11,9 +11,11 @@ angular.module("todoApp").controller("undoCtrl", ["pollService", "Todo", functio
     };
 
     self.undoDelete = function() {
+        pollService.hideUndoSpan();
         Todo.update({id: "undo"}, function(data) {
-            pollService.hideUndoSpan();
             pollService.refresh();
+        }).$promise.catch(function(err) {
+            pollService.handleError(err, "undo");
         });
     };
 

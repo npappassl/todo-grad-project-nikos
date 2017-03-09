@@ -15,11 +15,10 @@ module.exports = function(grunt) {
                 files: {
                     "public/main.js": [
                         "public/app/app.js",
+                        "public/app/directives/*.js",
                         "public/app/todo-factory.js",
-                        "public/app/controllers/listViewCtrl.js",
-                        "public/app/controllers/navCtrl.js",
-                        "public/app/controllers/newPostCtrl.js",
-                        "public/app/controllers/mainCtrl.js"
+                        "public/app/controllers/*.js",
+                        "public/app/services/*.js"
                     ]
                 }
             }
@@ -125,9 +124,9 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask("check", ["jshint", "jscs"]);
-    grunt.registerTask("test", ["check", "mochaTest:test", "mocha_istanbul:test", "istanbul_report",
+    grunt.registerTask("test", ["check", "uglify", "mochaTest:test", "mocha_istanbul:test", "istanbul_report",
         "istanbul_check_coverage"]);
-    grunt.registerTask("ci-test", ["check", "mochaTest:ci", "mocha_istanbul:ci", "istanbul_report",
+    grunt.registerTask("ci-test", ["check", "uglify", "mochaTest:ci", "mocha_istanbul:ci", "istanbul_report",
         "istanbul_check_coverage"]);
     grunt.registerTask("serve", ["express:dev", "watch"]);
     grunt.registerTask("default", ["uglify", "test", "serve"]);

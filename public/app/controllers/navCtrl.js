@@ -10,7 +10,7 @@ angular.module("todoApp").controller("navCtrl", ["pollService", "Todo", function
     self.refresh = function() {
         Todo.query().$promise.then(function(data) {
         self.nav.all.size = data.length;
-        self.nav.complete.size = data.filter((a) => a.isComplete).length;
+        self.nav.complete.size = data.filter(function(a) {return a.isComplete;}).length;
         self.nav.onGoing.size = self.nav.all.size - self.nav.complete.size;
         console.log(data);
     })};
@@ -23,9 +23,10 @@ angular.module("todoApp").controller("navCtrl", ["pollService", "Todo", function
         self.nav.complete.class = choices[tab].complete;
         self.nav.onGoing.class = choices[tab].onGoing;
         self.nav.all.class = choices[tab].all;
-        pollService.setFilter(choices[tab].filterS);
+        self.filterState.value = choices[tab].filterS;
         pollService.refresh();
     };
+    self.filterState = pollService.getFilter();
     pollService.setRefresh("navCtrl", self.refresh);
     self.refresh();
 }]);

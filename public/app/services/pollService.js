@@ -3,7 +3,9 @@ angular.module("todoApp").service("pollService", ["$timeout", "Todo", function(t
     var self = this;
     self.stateId = -1;
     self.refreshes = {};
-    self.filterState = false;
+    self.filterState = {
+        value:false
+    };
     self.justDeleted = {
         value:false
     };
@@ -40,16 +42,13 @@ angular.module("todoApp").service("pollService", ["$timeout", "Todo", function(t
     self.hideUndoSpan = function() {
         self.justDeleted.value = false;
     };
-    self.setError = function(err) {
-        self.errorDiv = err.error;
-    };
-    self.setFilter = function(filter) {
-        self.filterState = filter;
+    self.getError = function() {
+        return self.errorDiv;
     };
     self.getFilter = function() {
-        return {filter: self.filterState};
+        return self.filterState;
     };
-    self.setRefresh = function(name, func){
+    self.setRefresh = function(name, func) {
         self.refreshes[name] = function() {
             func();
         }

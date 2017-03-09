@@ -10,7 +10,6 @@ angular.module("todoApp")
     self.state = {
         placeholderClassName: "",
         justDeleted: false,
-        filterState: false,
         error: {
             text:""
         }
@@ -33,7 +32,6 @@ angular.module("todoApp")
     };
     self.refresh = function() {
         console.log("refreshList");
-        self.state.filterState = pollService.getFilter().filter;
         Todo.query(function(data) {
             self.todos = data;
         }).$promise.then(function(data) {
@@ -46,7 +44,8 @@ angular.module("todoApp")
         self.state.justDeleted = false;
     };
     pollService.setRefresh("TodoListCtrl", self.refresh);
-    pollService.setError(self.state);
+    self.state.filterState = pollService.getFilter();
+    self.state.error = pollService.getError();
     self.refresh();
     pollService.tick("TodoListCtrl");
 }]);

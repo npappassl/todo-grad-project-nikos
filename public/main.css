@@ -90,24 +90,26 @@ nav > span.active:hover{
     height: 5em;
     position:relative;
     top:100px;
-    background-color: rgb(80,31,52);
+    background-color: #65286b;
     display: inline-block;
-    transition: all .5s ease;
+    color: #78a98b;
+
 }
 #undoSpan:hover, #closePopup:hover{
     border-radius: 0;
     opacity: 1;
-    color: white;
 }
 #undoSpan a{
     text-decoration:underline;
+    cursor: pointer;
+    font-weight: 600;
 }
 #undoSpan a:hover{
-    opacity: 0.7;
+    color:white;
 }
 #closePopup{
     cursor: pointer;
-    background-color: rgb(80,31,52);
+    background-color: #65286b;
     font-size: 0.5em;
     margin: 0;
     display: block;
@@ -235,7 +237,7 @@ button,#submit-todo,.confirmUpdate{
     margin: 1em 1em 2em auto;
     text-align: center;
 }
-#deleteComplete{
+#delComplete{
   padding: 1em 0.5em 2em 0.5em;
 }
 button:hover , #submit-todo:hover{
@@ -261,5 +263,6 @@ button:hover , #submit-todo:hover{
 }
 .no-animate {
    -webkit-transition: none;
+   -moz-transition: none;
    transition: none;
 }
