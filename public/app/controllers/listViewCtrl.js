@@ -1,14 +1,14 @@
 angular.module("todoApp")
-    .controller("TodoListCtrl", ["pollService", "Todo", function(pollService, Todo) {
+    .controller("TodoListCtrl", ["interService", "Todo", function(interService, Todo) {
         console.log("TodoListCtrl","init");
     var self = this;
     self.todos = {
-        value:pollService.getTodos()
+        value:interService.getTodos()
     };
     self.state = {
-        placeholderClassName: pollService.getPlaceholderClassName(),
-        filterState: pollService.getFilter(),
-        error: pollService.getError()
+        placeholderClassName: interService.getPlaceholderClassName(),
+        filterState: interService.getFilter(),
+        error: interService.getError()
     };
 
     self.editedTodo = null;
@@ -21,7 +21,7 @@ angular.module("todoApp")
         }, 200);
     };
     self.updateDB = function(todo) {
-        pollService.updateDB(todo);
+        interService.updateDB(todo);
     };
-    pollService.tick("TodoListCtrl");
+    interService.tick("TodoListCtrl");
 }]);

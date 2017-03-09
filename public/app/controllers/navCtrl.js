@@ -1,8 +1,8 @@
-angular.module("todoApp").controller("navCtrl", ["pollService", function(pollService) {
+angular.module("todoApp").controller("navCtrl", ["interService", function(interService) {
     console.log("navCtrl","init");
     var self = this;
     self.todos = {
-        value:pollService.getTodos()
+        value:interService.getTodos()
     };
 
     self.nav = {
@@ -26,9 +26,9 @@ angular.module("todoApp").controller("navCtrl", ["pollService", function(pollSer
         self.nav.onGoing.class = choices[tab].onGoing;
         self.nav.all.class = choices[tab].all;
         self.filterState.value = choices[tab].filterS;
-        // pollService.refresh();
+        // interService.refresh();
     };
-    self.filterState = pollService.getFilter();
-    pollService.setRefresh("navCtrl", self.refresh);
+    self.filterState = interService.getFilter();
+    interService.setRefresh("navCtrl", self.refresh);
     self.refresh();
 }]);

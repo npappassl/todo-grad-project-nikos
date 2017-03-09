@@ -1,4 +1,4 @@
-angular.module("todoApp").directive("nipaDelBut", ["pollService", "Todo", function(pollService, Todo) {
+angular.module("todoApp").directive("nipaDelBut", ["interService", "Todo", function(interService, Todo) {
     return {
         restrict: "E",
         scope: {
@@ -16,10 +16,10 @@ angular.module("todoApp").directive("nipaDelBut", ["pollService", "Todo", functi
                 console.log("clicked", todo, $scope);
                 Todo.delete({id: $scope.todo.id}).$promise.then(function(data){
                     console.log("deleted", data);
-                    pollService.refresh();
-                    pollService.showUndoSpan();
+                    interService.refresh();
+                    interService.showUndoSpan();
                 }).catch(function(err){
-                    pollService.handleError(err, "delete item(s)");
+                    interService.handleError(err, "delete item(s)");
                 });
             });
         },

@@ -1,4 +1,4 @@
-angular.module("todoApp").directive("nipaComplBut", ["pollService", "Todo", function(pollService, Todo) {
+angular.module("todoApp").directive("nipaComplBut", ["interService", "Todo", function(interService, Todo) {
     return {
         restrict: "E",
         scope: {
@@ -9,9 +9,9 @@ angular.module("todoApp").directive("nipaComplBut", ["pollService", "Todo", func
         link: function($scope, element, attrs, todo){
             element.on("click", function() {
                 Todo.update({id: $scope.todo.id},{isComplete: true}).$promise.then(function(data){
-                    pollService.refresh();
+                    interService.refresh();
                 }).catch(function(err){
-                    pollService.handleError(err, "update item");
+                    interService.handleError(err, "update item");
                 });
             });
         },
