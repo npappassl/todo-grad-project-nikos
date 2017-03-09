@@ -17,8 +17,8 @@ module.exports = function(grunt) {
                         "public/app/app.js",
                         "public/app/directives/*.js",
                         "public/app/todo-factory.js",
-                        "public/app/controllers/*.js",
-                        "public/app/services/*.js"
+                        "public/app/services/*.js",
+                        "public/app/controllers/*.js"
                     ]
                 }
             }
@@ -61,7 +61,7 @@ module.exports = function(grunt) {
                 options: {
                     reporter: "xunit",
                     captureFile: testOutputLocation + "/mocha/results.xml",
-                    quiet: true
+                    quiet: false
                 }
             }
         },
@@ -128,6 +128,6 @@ module.exports = function(grunt) {
         "istanbul_check_coverage"]);
     grunt.registerTask("ci-test", ["check", "uglify", "mochaTest:ci", "mocha_istanbul:ci", "istanbul_report",
         "istanbul_check_coverage"]);
-    grunt.registerTask("serve", ["express:dev", "watch"]);
+    grunt.registerTask("serve", ["uglify", "express:dev", "watch"]);
     grunt.registerTask("default", ["uglify", "test", "serve"]);
 };

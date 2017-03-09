@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "grunt ci-test",
-    "start": "node server"
+    "start": "grunt serve"
   },
   "repository": {
     "type": "git",

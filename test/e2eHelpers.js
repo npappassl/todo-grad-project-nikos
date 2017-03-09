@@ -92,8 +92,12 @@ module.exports.getTodoListLabels = function() {
 };
 
 module.exports.addTodo = function(text) {
-    driver.findElement(webdriver.By.id("new-todo")).sendKeys(text);
-    driver.findElement(webdriver.By.id("submit-todo")).click();
+    var newTodo = driver.findElement(webdriver.By.css("#new-todo"));
+    var submitTodo = driver.findElement(webdriver.By.id("submit-todo"));
+    driver.wait(webdriver.until.elementIsVisible(newTodo), 5000);
+    driver.wait(webdriver.until.elementIsVisible(submitTodo), 5000);
+    newTodo.sendKeys(text);
+    submitTodo.click();
 };
 module.exports.deleteTodo = function(index) {
     var todoListPlaceholder = driver.findElement(webdriver.By.id("todo-list-placeholder"));
@@ -114,7 +118,7 @@ module.exports.deleteCompletedTodos = function() {
 };
 module.exports.isUndoSpanVisible = function() {
     var undoSpan = driver.findElement(webdriver.By.id("undoSpan"));
-    driver.wait(webdriver.until.elementTextContains(undoSpan, "Undo"), 5000);
+    driver.wait(webdriver.until.elementTextContains(undoSpan, "You just"), 5000);
 };
 module.exports.isDeleteCompleteNotVisible = function() {
     var deleteCompleteBut = driver.findElement(webdriver.By.id("delComplete"));
